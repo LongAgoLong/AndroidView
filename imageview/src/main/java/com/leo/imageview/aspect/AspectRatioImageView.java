@@ -24,17 +24,6 @@ import com.leo.imageview.R;
  * Description:可设置比例的图片
  */
 public class AspectRatioImageView extends ImageView {
-    private String tag = "GIF";
-    private Paint paint;
-    private int textWidth;
-    private int textHeight;
-    private int paddingX;
-    private int paddingY;
-    private Paint bgPaint;
-
-    private boolean isGif;
-    private RectF targetRect;
-    private Rect rect;
 
     private float viewAspectRatio;
 
@@ -48,58 +37,23 @@ public class AspectRatioImageView extends ImageView {
 
     public AspectRatioImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.AspectRatioImageView, defStyleAttr, 0);
-        viewAspectRatio = a.getFloat(R.styleable.AspectRatioImageView_imgAspectRatio, 0);
-        a.recycle();
-
-        bgPaint = new Paint();
-        bgPaint.setAntiAlias(true);
-        bgPaint.setColor(Color.parseColor("#ff658AB5"));
-
-        paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setFakeBoldText(true);
-        paint.setColor(Color.parseColor("#ffffffff"));
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(dp2px( 9));
-        rect = new Rect();
-        paint.getTextBounds(tag, 0, tag.length(), rect);
-        textHeight = rect.height();
-        textWidth = (int) paint.measureText(tag);
-        paddingX = dp2px(8);
-        paddingY = dp2px(6);
-
-        targetRect = new RectF(0, 0, 0, 0);
+        if (null != attrs) {
+            TypedArray a = context.obtainStyledAttributes(attrs,
+                    R.styleable.AspectRatioImageView, defStyleAttr, 0);
+            viewAspectRatio = a.getFloat(R.styleable.AspectRatioImageView_imgAspectRatio, 0);
+            a.recycle();
+        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (viewAspectRatio != 0) {
-            int widthSize = getExpectSize(dp2px( 80), widthMeasureSpec);
+            int widthSize = getExpectSize(dp2px(80), widthMeasureSpec);
             int heightSize = (int) (widthSize / viewAspectRatio);
             setMeasuredDimension(widthSize, heightSize);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        if (isGif)
-            drawTag(canvas);
-    }
-
-    private void drawTag(Canvas canvas) {
-        int measuredHeight = getHeight();
-        int measuredWidth = getWidth();
-        targetRect.set(measuredWidth - textWidth - paddingX, measuredHeight - textHeight - paddingY, measuredWidth, measuredHeight);
-
-        canvas.drawRoundRect(targetRect, 5, 5, bgPaint);
-        Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
-        int baseline = (int) ((targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2);
-        canvas.drawText(tag, targetRect.centerX(), baseline, paint);
     }
 
     private int getExpectSize(int size, int measureSpec) {
@@ -120,19 +74,8 @@ public class AspectRatioImageView extends ImageView {
         return result;
     }
 
-    public void setViewAspectRatio(float viewAspectRatio) {
+    public void setAspectRatio(float viewAspectRatio) {
         this.viewAspectRatio = viewAspectRatio;
-    }
-
-    public void setText(@NonNull String tag) {
-        this.tag = tag;
-        paint.getTextBounds(tag, 0, tag.length(), rect);
-        textHeight = rect.height();
-        textWidth = (int) paint.measureText(tag);
-    }
-
-    public void setIsGif(boolean gif) {
-        isGif = gif;
     }
 
     /**
