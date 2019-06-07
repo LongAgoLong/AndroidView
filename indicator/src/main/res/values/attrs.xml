@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawableIndicator">
+        <attr name="di_width" format="dimension" />
+        <attr name="di_height" format="dimension" />
+        <attr name="di_margin" format="dimension" />
+        <attr name="di_animator" format="reference" />
+        <attr name="di_animator_reverse" format="reference" />
+        <attr name="di_drawable_selected" format="reference" />
+        <attr name="di_drawable_unselected" format="reference" />
+    </declare-styleable>
+</resources>
