@@ -1,0 +1,2 @@
+include ':app', ':imageview'
+rootProject.name='AndroidView'
