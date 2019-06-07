@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CstGridView">
+        <attr name="cst_grid_gap" format="dimension" />
+        <attr name="cst_grid_column" format="integer" />
+    </declare-styleable>
+</resources>
