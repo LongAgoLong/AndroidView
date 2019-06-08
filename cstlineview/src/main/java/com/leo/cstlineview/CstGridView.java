@@ -164,6 +164,7 @@ public class CstGridView extends ViewGroup {
     public void setAdapter(@NonNull CstBaseAdapter adapter) {
         if (this.adapter != null && mDataSetObserver != null) {
             this.adapter.unregisterDataSetObserver(mDataSetObserver);
+            this.adapter.recycle();
         }
         this.adapter = adapter;
         mDataSetObserver = new AdapterDataSetObserver();
@@ -176,5 +177,11 @@ public class CstGridView extends ViewGroup {
      */
     public void setGap(int spacing) {
         gap = spacing;
+    }
+
+    public void recycle() {
+        if (null != adapter) {
+            adapter.recycle();
+        }
     }
 }

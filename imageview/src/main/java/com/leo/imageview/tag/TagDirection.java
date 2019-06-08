@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
         TagDirection.LEFT_TOP,
         TagDirection.LEFT_BOTTOM,
         TagDirection.RIGHT_TOP,
-        TagDirection.RIGHT_BOTTOM,
+        TagDirection.RIGHT_BOTTOM
 })
 @Retention(RetentionPolicy.SOURCE)
 public @interface TagDirection {

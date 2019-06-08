@@ -56,6 +56,12 @@ public abstract class CstBaseAdapter<T> extends BaseAdapter {
         }
     }
 
+    public void recycle() {
+        if (null != viewList) {
+            viewList.clear();
+        }
+    }
+
     public int getCount() {
         if (list != null) {
             if (maxSize != -1 && list.size() > maxSize) {

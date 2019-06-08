@@ -28,6 +28,7 @@ public class CstLinearView extends LinearLayout {
     public void setAdapter(CstBaseAdapter adapter) {
         if (this.adapter != null && mDataSetObserver != null) {
             this.adapter.unregisterDataSetObserver(mDataSetObserver);
+            this.adapter.recycle();
         }
         this.adapter = adapter;
         if (this.adapter != null) {
@@ -37,7 +38,7 @@ public class CstLinearView extends LinearLayout {
         bindView();
     }
 
-    public void setOnCstItemClickCallback(final OnCstItemClickCallback onCstItemClickCallback) {
+    public void setOnItemClickCallback(final OnCstItemClickCallback onCstItemClickCallback) {
         this.onCstItemClickCallback = onCstItemClickCallback;
         if (adapter != null) {
             for (int i = 0; i < getChildCount(); i++) {
@@ -88,8 +89,9 @@ public class CstLinearView extends LinearLayout {
                 view.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (onCstItemClickCallback != null)
+                        if (onCstItemClickCallback != null) {
                             onCstItemClickCallback.onItemClicked(v, obj, tmp);
+                        }
                     }
                 });
             }
@@ -97,4 +99,9 @@ public class CstLinearView extends LinearLayout {
         }
     }
 
+    public void recycle() {
+        if (null != adapter) {
+            adapter.recycle();
+        }
+    }
 }
