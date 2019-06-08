@@ -177,6 +177,9 @@ public class CstGridView extends ViewGroup {
      */
     public void setGap(int spacing) {
         gap = spacing;
+        if (null != adapter) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void recycle() {
