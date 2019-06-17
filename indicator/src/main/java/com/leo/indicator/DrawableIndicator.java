@@ -59,25 +59,18 @@ public class DrawableIndicator extends LinearLayout {
             return;
         }
 
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DrawableIndicator);
-        mIndicatorWidth =
-                typedArray.getDimensionPixelSize(R.styleable.DrawableIndicator_di_width, -1);
-        mIndicatorHeight =
-                typedArray.getDimensionPixelSize(R.styleable.DrawableIndicator_di_height, -1);
-        mIndicatorMargin =
-                typedArray.getDimensionPixelSize(R.styleable.DrawableIndicator_di_margin, -1);
-
-        mAnimatorResId = typedArray.getResourceId(R.styleable.DrawableIndicator_di_animator,
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DrawableIndicator);
+        mIndicatorWidth = a.getDimensionPixelSize(R.styleable.DrawableIndicator_di_width, dp2px(8));
+        mIndicatorHeight = a.getDimensionPixelSize(R.styleable.DrawableIndicator_di_height, dp2px(8));
+        mIndicatorMargin = a.getDimensionPixelSize(R.styleable.DrawableIndicator_di_margin, dp2px(5));
+        mAnimatorResId = a.getResourceId(R.styleable.DrawableIndicator_di_animator,
                 R.animator.scale_with_alpha);
-        mAnimatorReverseResId =
-                typedArray.getResourceId(R.styleable.DrawableIndicator_di_animator_reverse, 0);
-        mIndicatorResIdSelected =
-                typedArray.getResourceId(R.styleable.DrawableIndicator_di_drawable_selected,
-                        R.drawable.point_radius);
-        mIndicatorResIdUnselected =
-                typedArray.getResourceId(R.styleable.DrawableIndicator_di_drawable_unselected,
-                        mIndicatorResIdSelected);
-        typedArray.recycle();
+        mAnimatorReverseResId = a.getResourceId(R.styleable.DrawableIndicator_di_animator_reverse, 0);
+        mIndicatorResIdSelected = a.getResourceId(R.styleable.DrawableIndicator_di_drawable_selected,
+                R.drawable.point_radius);
+        mIndicatorResIdUnselected = a.getResourceId(R.styleable.DrawableIndicator_di_drawable_unselected,
+                mIndicatorResIdSelected);
+        a.recycle();
     }
 
     /**
