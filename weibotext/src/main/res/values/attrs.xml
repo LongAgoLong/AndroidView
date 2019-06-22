@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="WeiboEditText">
+        <attr name="wb_edit_mode">
+            <flag name="all" value="0" />
+            <flag name="call" value="1" />
+            <flag name="topic" value="2" />
+        </attr>
+        <attr name="wb_edit_color" format="color" />
+        <attr name="wb_edit_call_click_enable" format="boolean" />
+        <attr name="wb_edit_topic_click_enable" format="boolean" />
+        <attr name="wb_edit_uniqueness_check" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="WeiboTextView">
+        <attr name="wb_text_mode">
+            <flag name="all" value="0" />
+            <flag name="call" value="1" />
+            <flag name="topic" value="2" />
+            <flag name="html" value="3" />
+            <flag name="call_topic" value="4" />
+            <flag name="call_html" value="5" />
+            <flag name="topic_html" value="6" />
+        </attr>
+        <attr name="wb_text_color" format="color" />
+        <attr name="wb_text_call_click_enable" format="boolean" />
+        <attr name="wb_text_topic_click_enable" format="boolean" />
+        <attr name="wb_text_html_replace" format="string" />
+    </declare-styleable>
+</resources>

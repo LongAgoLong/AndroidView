@@ -1,2 +1,2 @@
-include ':app', ':imageview', ':cstlineview', ':indicator'
+include ':app', ':imageview', ':cstlineview', ':indicator', ':weibotext'
 rootProject.name='AndroidView'

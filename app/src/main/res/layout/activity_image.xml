@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ImageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.leo.imageview.circle.CircleImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/text"
+            app:civ_border_color="@color/colorAccent"
+            app:civ_border_width="3dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="圆形图片控件"
+            android:textColor="@android:color/black" />
+
+        <com.leo.imageview.aspect.AspectRatioImageView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="@color/colorPrimary"
+            android:src="@mipmap/text"
+            app:imgAspectRatio="0.5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="可设置宽高比的图片控件"
+            android:textColor="@android:color/black" />
+
+        <com.leo.imageview.round.RoundedImageView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/text"
+            app:imgAspectRatio="0.702"
+            app:sriv_border_color="@color/colorAccent"
+            app:sriv_border_width="3dp"
+            app:sriv_left_bottom_corner_radius="80dp"
+            app:sriv_left_top_corner_radius="20dp"
+            app:sriv_right_bottom_corner_radius="60dp"
+            app:sriv_right_top_corner_radius="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="可设置圆角的图片控件"
+            android:textColor="@android:color/black" />
+
+        <com.leo.imageview.anycrop.CropImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="30dp"
+            android:src="@mipmap/text"
+            app:crop_direction="center_bottom" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="可设置裁剪方向的图片控件"
+            android:textColor="@android:color/black" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

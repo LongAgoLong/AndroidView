@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".WeiboViewActivity">
+
+    <com.leo.weibotext.WeiboTextView
+        android:id="@+id/wbTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:wb_text_call_click_enable="true"
+        app:wb_text_color="@color/colorAccent"
+        app:wb_text_html_replace="$网页链接$"
+        app:wb_text_mode="all"
+        app:wb_text_topic_click_enable="true" />
+
+    <com.leo.weibotext.WeiboEditText
+        android:id="@+id/wbEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wbTextView"
+        app:wb_edit_call_click_enable="true"
+        app:wb_edit_color="@color/colorAccent"
+        app:wb_edit_mode="all"
+        app:wb_edit_topic_click_enable="true"
+        app:wb_edit_uniqueness_check="false" />
+
+    <Button
+        android:id="@+id/topicBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="增加话题"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/atBtn" />
+
+    <Button
+        android:id="@+id/atBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="增加@"
+        app:layout_constraintBottom_toBottomOf="@+id/topicBtn"
+        app:layout_constraintLeft_toRightOf="@+id/topicBtn"
+        app:layout_constraintRight_toRightOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
