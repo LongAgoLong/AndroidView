@@ -1,5 +1,5 @@
 # AndroidView
-一些项目中常用的自定义view的整理归档分享 
+一些项目中常用的自定义view的整理归档分享  
 [![](https://jitpack.io/v/LongAgoLong/AndroidView.svg)](https://jitpack.io/#LongAgoLong/AndroidView)    
 **gradle依赖**
 ```java
