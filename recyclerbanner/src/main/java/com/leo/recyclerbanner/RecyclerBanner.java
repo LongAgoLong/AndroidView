@@ -63,7 +63,7 @@ public class RecyclerBanner extends RecyclerView {
                 intervalTime = INTERVAL_TIME;
             }
             resetDelayed();
-            if (null != iPageChangeCallbacks) {
+            if (null != iPageChangeCallbacks && currentIndex >= 0) {
                 for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
                     if (null != iPageChangeCallback) {
                         iPageChangeCallback.onPageSelect(pos2Index(currentIndex), false);
@@ -140,11 +140,13 @@ public class RecyclerBanner extends RecyclerView {
             @Override
             public int findTargetSnapPosition(LayoutManager layoutManager, int velocityX, int velocityY) {
                 int targetPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
-                currentIndex = targetPos;
-                if (null != iPageChangeCallbacks) {
-                    for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
-                        if (null != iPageChangeCallback) {
-                            iPageChangeCallback.onPageSelect(pos2Index(currentIndex), true);
+                if (targetPos >= 0) {
+                    currentIndex = targetPos;
+                    if (null != iPageChangeCallbacks) {
+                        for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
+                            if (null != iPageChangeCallback) {
+                                iPageChangeCallback.onPageSelect(pos2Index(currentIndex), true);
+                            }
                         }
                     }
                 }
