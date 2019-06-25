@@ -9,6 +9,7 @@ import com.leo.system.IntentUtil;
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Button mWeiboBtn;
     private Button mImageBtn;
+    private Button mBannerBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mWeiboBtn.setOnClickListener(this);
         mImageBtn = findViewById(R.id.imageBtn);
         mImageBtn.setOnClickListener(this);
+        mBannerBtn = findViewById(R.id.bannerBtn);
+        mBannerBtn.setOnClickListener(this);
     }
 
     @Override
@@ -32,6 +35,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.imageBtn:
                 IntentUtil.startActivity(this, ImageActivity.class);
+                break;
+            case R.id.bannerBtn:
+                IntentUtil.startActivity(this, BannerActivity.class);
                 break;
         }
     }

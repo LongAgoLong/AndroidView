@@ -8,6 +8,7 @@ import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -65,14 +66,14 @@ public class RecyclerBanner extends RecyclerView {
             if (null != iPageChangeCallbacks) {
                 for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
                     if (null != iPageChangeCallback) {
-                        iPageChangeCallback.onPageSelect(getCurrentIndex(), false);
+                        iPageChangeCallback.onPageSelect(pos2Index(currentIndex), false);
                     }
                 }
             }
         }
     };
 
-    private synchronized void resetDelayed(){
+    private synchronized void resetDelayed() {
         handler.removeCallbacks(playTask);
         handler.postDelayed(playTask, intervalTime);
     }
@@ -80,20 +81,16 @@ public class RecyclerBanner extends RecyclerView {
     public RecyclerBanner(Context context) {
         this(context, null);
         initAttrs(context, null, 0);
-        init();
     }
 
     public RecyclerBanner(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
         initAttrs(context, attrs, 0);
-        init();
     }
 
     public RecyclerBanner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initAttrs(context, attrs, defStyleAttr);
-        init();
-        setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
     }
 
     /**
@@ -120,7 +117,8 @@ public class RecyclerBanner extends RecyclerView {
         }
     }
 
-    private void init() {
+    public void init(@Nullable LayoutManager layout) {
+        setLayoutManager(layout);
         adapter = new BaseBannerAdapter() {
             @Override
             public RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType) {
@@ -138,23 +136,29 @@ public class RecyclerBanner extends RecyclerView {
             }
         };
         setAdapter(adapter);
-        new LinearSnapHelper() {
+        PagerSnapHelper snapHelper = new PagerSnapHelper() {
             @Override
-            public int findTargetSnapPosition(RecyclerView.LayoutManager layoutManager, int velocityX, int velocityY) {
+            public int findTargetSnapPosition(LayoutManager layoutManager, int velocityX, int velocityY) {
                 int targetPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
                 currentIndex = targetPos;
                 if (null != iPageChangeCallbacks) {
                     for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
                         if (null != iPageChangeCallback) {
-                            iPageChangeCallback.onPageSelect(getCurrentIndex(), true);
+                            iPageChangeCallback.onPageSelect(pos2Index(currentIndex), true);
                         }
                     }
                 }
                 return targetPos;
             }
-        }.attachToRecyclerView(this);
+        };
+        snapHelper.attachToRecyclerView(this);
     }
 
+    /**
+     * adapter实现回调
+     *
+     * @param adapterCallback
+     */
     public void setAdapter(ICreateAdapterCallback adapterCallback) {
         iCreateAdapterCallback = adapterCallback;
     }
@@ -276,6 +280,14 @@ public class RecyclerBanner extends RecyclerView {
         }
     }
 
+    public int pos2Index(int pos) {
+        if (null == datas || datas.isEmpty()) {
+            return 0;
+        } else {
+            return pos % datas.size();
+        }
+    }
+
     /**
      * 页面切换监听
      *
@@ -300,15 +312,6 @@ public class RecyclerBanner extends RecyclerView {
             return;
         }
         this.iPageChangeCallbacks.clear();
-    }
-
-    /**
-     * adapter实现回调
-     *
-     * @param iCreateAdapterCallback
-     */
-    public void setICreateAdapterCallback(ICreateAdapterCallback iCreateAdapterCallback) {
-        this.iCreateAdapterCallback = iCreateAdapterCallback;
     }
 
     /**
