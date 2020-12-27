@@ -1,21 +1,28 @@
-package com.leo.androidview;
+package com.leo.androidview.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.RecyclerView;
 
-/**
- * Created by LEO
- * On 2019/6/22
- * Description:图片控件
- */
-public class ImageActivity extends BaseActivity {
+import com.leo.androidview.R;
+import com.leo.androidview.adapter.BeautyAdapter;
+import com.leo.androidview.databinding.ActivityRepeatManagerBinding;
+import com.leo.layoutmanager.RepeatLayoutManager;
+
+public class RepeatManagerActivity extends BaseActivity {
+
+    private ActivityRepeatManagerBinding mBinding;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_repeat_manager);
+        mBinding.recyclerView.setLayoutManager(new RepeatLayoutManager(this, RecyclerView.HORIZONTAL));
+        mBinding.recyclerView.setAdapter(new BeautyAdapter());
     }
 
     @Override
@@ -24,7 +31,7 @@ public class ImageActivity extends BaseActivity {
         ActionBar actionBar = getSupportActionBar();
         if (null != actionBar) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setTitle("图片控件");
+            actionBar.setTitle("RepeatLayoutManager");
         }
     }
 

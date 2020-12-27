@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".WeiboViewActivity">
+    tools:context=".ui.WeiboViewActivity">
 
     <com.leo.weibotext.WeiboTextView
         android:id="@+id/wbTextView"

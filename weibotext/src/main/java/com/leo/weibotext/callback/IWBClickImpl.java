@@ -4,8 +4,8 @@ import android.view.View;
 
 import com.leo.weibotext.enume.WBClickMode;
 
-public interface OnWBClickImpl {
-    class OnWBClickImplAdapter implements OnWBClickImpl {
+public interface IWBClickImpl {
+    class IWBClickImplAdapter implements IWBClickImpl {
 
         @Override
         public void onContentClick(@WBClickMode int wbMode, String str) {

@@ -3,22 +3,21 @@ package com.leo.recyclerbanner;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.leo.recyclerbanner.callback.IBannerEntity;
-import com.leo.recyclerbanner.callback.ICreateAdapterCallback;
-import com.leo.recyclerbanner.callback.IPageChangeCallback;
-import com.leo.recyclerbanner.callback.IPageClickCallback;
-import com.leo.recyclerbanner.callback.IPageDataChangeCallback;
+import com.leo.recyclerbanner.callback.ICreateAdapter;
+import com.leo.recyclerbanner.callback.IPageChange;
+import com.leo.recyclerbanner.callback.IPageClick;
+import com.leo.recyclerbanner.callback.IPageDataChange;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,13 +32,13 @@ import java.util.List;
 public class RecyclerBanner extends RecyclerView {
     private static final int INTERVAL_TIME = 4000;
 
-    private ArrayList<IPageChangeCallback> iPageChangeCallbacks;
-    private ICreateAdapterCallback iCreateAdapterCallback;
-    private IPageClickCallback iPageClickCallback;
-    private IPageDataChangeCallback iPageDataChangeCallback;
+    private ArrayList<IPageChange> iPageChanges;
+    private ICreateAdapter iCreateAdapter;
+    private IPageClick iPageClick;
+    private IPageDataChange iPageDataChange;
 
     private BaseBannerAdapter adapter;
-    private List<IBannerEntity> datas = new ArrayList<>();
+    private final List<IBannerEntity> dates = new ArrayList<>();
 
     private int currentIndex;
     private int startX, startY;
@@ -49,34 +48,7 @@ public class RecyclerBanner extends RecyclerView {
     private boolean isAutoPlay;
     private boolean isPlaying;
 
-    private Handler handler = new Handler();
-    private Runnable playTask = new Runnable() {
-        @Override
-        public void run() {
-            if (currentIndex == Integer.MAX_VALUE) {
-                currentIndex = datas.size() * 10000;
-                scrollToPosition(currentIndex);
-            } else {
-                smoothScrollToPosition(++currentIndex);
-            }
-            if (intervalTime < 1000) {
-                intervalTime = INTERVAL_TIME;
-            }
-            resetDelayed();
-            if (null != iPageChangeCallbacks && currentIndex >= 0) {
-                for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
-                    if (null != iPageChangeCallback) {
-                        iPageChangeCallback.onPageSelect(pos2Index(currentIndex), false);
-                    }
-                }
-            }
-        }
-    };
-
-    private synchronized void resetDelayed() {
-        handler.removeCallbacks(playTask);
-        handler.postDelayed(playTask, intervalTime);
-    }
+    private static final Handler mUIHandler = new Handler(Looper.getMainLooper());
 
     public RecyclerBanner(Context context) {
         this(context, null);
@@ -122,16 +94,16 @@ public class RecyclerBanner extends RecyclerView {
         adapter = new BaseBannerAdapter() {
             @Override
             public RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType) {
-                if (null != iCreateAdapterCallback) {
-                    return iCreateAdapterCallback.createHold(parent, viewType);
+                if (null != iCreateAdapter) {
+                    return iCreateAdapter.createHold(parent, viewType);
                 }
                 return null;
             }
 
             @Override
             public void bindHold(RecyclerView.ViewHolder holder, int position) {
-                if (null != iCreateAdapterCallback) {
-                    iCreateAdapterCallback.bindHold(holder, position);
+                if (null != iCreateAdapter) {
+                    iCreateAdapter.bindHold(holder, position);
                 }
             }
         };
@@ -142,11 +114,9 @@ public class RecyclerBanner extends RecyclerView {
                 int targetPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
                 if (targetPos >= 0) {
                     currentIndex = targetPos;
-                    if (null != iPageChangeCallbacks) {
-                        for (IPageChangeCallback iPageChangeCallback : iPageChangeCallbacks) {
-                            if (null != iPageChangeCallback) {
-                                iPageChangeCallback.onPageSelect(pos2Index(currentIndex), true);
-                            }
+                    if (null != iPageChanges) {
+                        for (IPageChange iPageChangeCallback : iPageChanges) {
+                            iPageChangeCallback.onPageSelect(pos2Index(currentIndex), true);
                         }
                     }
                 }
@@ -161,49 +131,32 @@ public class RecyclerBanner extends RecyclerView {
      *
      * @param adapterCallback
      */
-    public void setAdapter(ICreateAdapterCallback adapterCallback) {
-        iCreateAdapterCallback = adapterCallback;
+    public void setAdapter(ICreateAdapter adapterCallback) {
+        iCreateAdapter = adapterCallback;
     }
 
-    public synchronized void setPlaying(boolean playing) {
-        if (playing) {
-            if (isAutoPlay()
-                    && !isPlaying()
-                    && null != adapter
-                    && adapter.getItemCount() > 2) {
-                isPlaying = true;
-                resetDelayed();
-            }
-        } else {
-            if (isPlaying()) {
-                handler.removeCallbacks(playTask);
-                isPlaying = false;
-            }
-        }
-    }
-
-    public int setDatas(Collection<? extends IBannerEntity> datas) {
+    public int setDates(Collection<? extends IBannerEntity> datas) {
         setPlaying(false);
-        this.datas.clear();
+        this.dates.clear();
         if (datas != null) {
-            this.datas.addAll(datas);
+            this.dates.addAll(datas);
         }
-        if (!this.datas.isEmpty()) {
-            currentIndex = this.datas.size() * 10000;
+        if (!this.dates.isEmpty()) {
+            currentIndex = this.dates.size() * 10000;
             adapter.notifyDataSetChanged();
-            if (null != iPageDataChangeCallback) {
-                iPageDataChangeCallback.onPageDataChange(this.datas.size(), currentIndex);
+            if (null != iPageDataChange) {
+                iPageDataChange.onPageDataChange(this.dates.size(), currentIndex);
             }
             scrollToPosition(currentIndex);
             setPlaying(true);
         } else {
             currentIndex = 0;
             adapter.notifyDataSetChanged();
-            if (null != iPageDataChangeCallback) {
-                iPageDataChangeCallback.onPageDataChange(this.datas.size(), currentIndex);
+            if (null != iPageDataChange) {
+                iPageDataChange.onPageDataChange(this.dates.size(), currentIndex);
             }
         }
-        return this.datas.size();
+        return this.dates.size();
     }
 
     @Override
@@ -248,8 +201,10 @@ public class RecyclerBanner extends RecyclerView {
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
             holder.itemView.setOnClickListener(v -> {
-                if (iPageClickCallback != null) {
-                    iPageClickCallback.onClick(holder.getLayoutPosition(), datas.get(currentIndex % datas.size()));
+                if (iPageClick != null) {
+                    iPageClick.onClick(holder.getAdapterPosition(),
+                            dates.get(currentIndex % dates.size()),
+                            holder.itemView);
                 }
             });
             bindHold(holder, position);
@@ -257,7 +212,7 @@ public class RecyclerBanner extends RecyclerView {
 
         @Override
         public int getItemCount() {
-            return (datas == null || datas.isEmpty()) ? 0 : isLoop() ? Integer.MAX_VALUE : datas.size();
+            return dates.isEmpty() ? 0 : isLoop() ? Integer.MAX_VALUE : dates.size();
         }
 
         public abstract RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType);
@@ -266,72 +221,68 @@ public class RecyclerBanner extends RecyclerView {
     }
 
     public void setCurrentIndex(int index) {
-        handler.postDelayed(() -> {
-            if (null != datas && !datas.isEmpty()) {
-                currentIndex = datas.size() * 10000 + index;
+        mUIHandler.postDelayed(() -> {
+            if (null != dates && !dates.isEmpty()) {
+                currentIndex = dates.size() * 10000 + index;
                 smoothScrollToPosition(currentIndex);
             }
         }, 100);
     }
 
     public int getCurrentIndex() {
-        if (null == datas || datas.isEmpty()) {
-            return 0;
-        } else {
-            return currentIndex % datas.size();
-        }
+        return pos2Index(currentIndex);
     }
 
     public int pos2Index(int pos) {
-        if (null == datas || datas.isEmpty()) {
+        if (null == dates || dates.isEmpty()) {
             return 0;
         } else {
-            return pos % datas.size();
+            return pos % dates.size();
         }
     }
 
     /**
      * 页面切换监听
      *
-     * @param iPageChangeCallback
+     * @param iPageChange
      */
-    public void addIPageChangeCallback(@NonNull IPageChangeCallback iPageChangeCallback) {
-        if (null == iPageChangeCallbacks) {
-            iPageChangeCallbacks = new ArrayList<>();
+    public void addPageChangeCallback(@NonNull IPageChange iPageChange) {
+        if (null == iPageChanges) {
+            iPageChanges = new ArrayList<>();
         }
-        this.iPageChangeCallbacks.add(iPageChangeCallback);
+        this.iPageChanges.add(iPageChange);
     }
 
-    public void removeIPageChangeCallback(@NonNull IPageChangeCallback iPageChangeCallback) {
-        if (null == iPageChangeCallbacks) {
+    public void removePageChangeCallback(@NonNull IPageChange iPageChange) {
+        if (null == iPageChanges) {
             return;
         }
-        this.iPageChangeCallbacks.remove(iPageChangeCallback);
+        this.iPageChanges.remove(iPageChange);
     }
 
-    public void clearIPageChangeCallback() {
-        if (null == iPageChangeCallbacks) {
+    public void clearPageChangeCallback() {
+        if (null == iPageChanges) {
             return;
         }
-        this.iPageChangeCallbacks.clear();
+        this.iPageChanges.clear();
     }
 
     /**
      * 页面点击回调
      *
-     * @param iPageClickCallback
+     * @param iPageClick
      */
-    public void setIPageClickCallback(IPageClickCallback iPageClickCallback) {
-        this.iPageClickCallback = iPageClickCallback;
+    public void setPageClickCallback(IPageClick iPageClick) {
+        this.iPageClick = iPageClick;
     }
 
     /**
      * 数据变更回调
      *
-     * @param iPageDataChangeCallback
+     * @param iPageDataChange
      */
-    public void setiPageDataChangeCallback(IPageDataChangeCallback iPageDataChangeCallback) {
-        this.iPageDataChangeCallback = iPageDataChangeCallback;
+    public void setPageDataChangeCallback(IPageDataChange iPageDataChange) {
+        this.iPageDataChange = iPageDataChange;
     }
 
     /**
@@ -345,8 +296,8 @@ public class RecyclerBanner extends RecyclerView {
         }
     }
 
-    public List<IBannerEntity> getDatas() {
-        return datas;
+    public List<IBannerEntity> getDates() {
+        return dates;
     }
 
     public boolean isLoop() {
@@ -367,5 +318,49 @@ public class RecyclerBanner extends RecyclerView {
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+    public synchronized void setPlaying(boolean playing) {
+        if (playing) {
+            if (isAutoPlay() && !isPlaying()) {
+                isPlaying = true;
+                resetDelayed();
+            }
+        } else {
+            if (isPlaying()) {
+                mUIHandler.removeCallbacks(playTask);
+                isPlaying = false;
+            }
+        }
+    }
+
+    private final Runnable playTask = new Runnable() {
+        @Override
+        public void run() {
+            if (currentIndex == Integer.MAX_VALUE) {
+                currentIndex = dates.size() * 10000;
+                scrollToPosition(currentIndex);
+            } else {
+                smoothScrollToPosition(++currentIndex);
+            }
+            if (intervalTime < 1000) {
+                intervalTime = INTERVAL_TIME;
+            }
+            resetDelayed();
+            if (null != iPageChanges && currentIndex >= 0) {
+                for (IPageChange iPageChange : iPageChanges) {
+                    if (null != iPageChange) {
+                        iPageChange.onPageSelect(pos2Index(currentIndex), false);
+                    }
+                }
+            }
+        }
+    };
+
+    private synchronized void resetDelayed() {
+        mUIHandler.removeCallbacks(playTask);
+        if (isAutoPlay() && isPlaying()) {
+            mUIHandler.postDelayed(playTask, intervalTime);
+        }
     }
 }

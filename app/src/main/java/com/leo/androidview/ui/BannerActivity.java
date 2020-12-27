@@ -1,4 +1,4 @@
-package com.leo.androidview;
+package com.leo.androidview.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,12 +14,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.leo.androidview.R;
 import com.leo.androidview.entity.BannerEntity;
 import com.leo.recyclerbanner.RecyclerBanner;
-import com.leo.recyclerbanner.callback.IBannerEntity;
-import com.leo.recyclerbanner.callback.ICreateAdapterCallback;
-import com.leo.recyclerbanner.callback.IPageChangeCallback;
-import com.leo.recyclerbanner.callback.IPageClickCallback;
+import com.leo.recyclerbanner.callback.ICreateAdapter;
 
 import java.util.ArrayList;
 
@@ -42,10 +40,11 @@ public class BannerActivity extends BaseActivity {
     }
 
     private void initData() {
-        list = new ArrayList<>();
-        list.add(new BannerEntity());
-        list.add(new BannerEntity());
-        list.add(new BannerEntity());
+        list = new ArrayList<BannerEntity>() {{
+            add(new BannerEntity());
+            add(new BannerEntity());
+            add(new BannerEntity());
+        }};
     }
 
     private void initView() {
@@ -53,10 +52,11 @@ public class BannerActivity extends BaseActivity {
 
         mBanner = findViewById(R.id.banner);
         mBanner.init(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mBanner.setAdapter(new ICreateAdapterCallback() {
+        mBanner.setAdapter(new ICreateAdapter() {
             @Override
             public RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType) {
-                return new ImgHold(LayoutInflater.from(BannerActivity.this).inflate(R.layout.item_banner, parent, false));
+                return new ImgHold(LayoutInflater.from(BannerActivity.this).inflate(R.layout.item_banner, parent,
+                        false));
             }
 
             @Override
@@ -78,19 +78,11 @@ public class BannerActivity extends BaseActivity {
                 }
             }
         });
-        mBanner.addIPageChangeCallback(new IPageChangeCallback() {
-            @Override
-            public void onPageSelect(int realPos, boolean isUserTouch) {
-                mResultTv.setText("currentIndex:" + realPos);
-            }
-        });
-        mBanner.setIPageClickCallback(new IPageClickCallback() {
-            @Override
-            public void onClick(int position, IBannerEntity entity) {
+        mBanner.addPageChangeCallback((realPos, isUserTouch) -> mResultTv.setText(String.format("currentIndex:%d", realPos)));
+        mBanner.setPageClickCallback((position, entity, view) -> {
 
-            }
         });
-        mBanner.setDatas(list);
+        mBanner.setDates(list);
     }
 
     @Override
@@ -112,7 +104,7 @@ public class BannerActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class ImgHold extends RecyclerView.ViewHolder {
+    private static class ImgHold extends RecyclerView.ViewHolder {
         public ImageView mImg;
 
         public ImgHold(@NonNull View itemView) {

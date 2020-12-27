@@ -1,5 +1,5 @@
 package com.leo.recyclerbanner.callback;
 
-public interface IPageDataChangeCallback {
+public interface IPageDataChange {
     void onPageDataChange(int dataSize, int current);
 }

@@ -1,5 +1,5 @@
 package com.leo.recyclerbanner.callback;
 
-public interface IPageChangeCallback {
+public interface IPageChange {
     void onPageSelect(int realPos, boolean isUserTouch);
 }

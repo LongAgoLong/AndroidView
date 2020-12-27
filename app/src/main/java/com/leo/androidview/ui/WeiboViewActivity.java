@@ -1,4 +1,4 @@
-package com.leo.androidview;
+package com.leo.androidview.ui;
 
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -9,9 +9,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 
+import com.leo.androidview.R;
 import com.leo.weibotext.WeiboEditText;
 import com.leo.weibotext.WeiboTextView;
-import com.leo.weibotext.callback.OnWBClickImpl;
+import com.leo.weibotext.callback.IWBClickImpl;
 import com.leo.weibotext.enume.WBClickMode;
 
 /**
@@ -61,7 +62,7 @@ public class WeiboViewActivity extends BaseActivity implements View.OnClickListe
         mAtBtn.setOnClickListener(this);
 
         mWbTextView = findViewById(R.id.wbTextView);
-        mWbTextView.setOnWBClickImpl(new OnWBClickImpl.OnWBClickImplAdapter() {
+        mWbTextView.setiWBClickImpl(new IWBClickImpl.IWBClickImplAdapter() {
             @Override
             public void onContentClick(int wbMode, String str) {
                 super.onContentClick(wbMode, str);
@@ -75,11 +76,13 @@ public class WeiboViewActivity extends BaseActivity implements View.OnClickListe
                     case WBClickMode.HTML:
                         showToast("html:" + str);
                         break;
+                    default:
+                        break;
                 }
             }
         });
         mWbEditText = findViewById(R.id.wbEditText);
-        mWbEditText.setOnWBClickImpl(new OnWBClickImpl.OnWBClickImplAdapter() {
+        mWbEditText.setWBClickImpl(new IWBClickImpl.IWBClickImplAdapter() {
             @Override
             public void onContentClick(int wbMode, String str) {
                 super.onContentClick(wbMode, str);
@@ -89,6 +92,8 @@ public class WeiboViewActivity extends BaseActivity implements View.OnClickListe
                         break;
                     case WBClickMode.TOPIC:
                         showToast("topic:" + str);
+                        break;
+                    default:
                         break;
                 }
             }

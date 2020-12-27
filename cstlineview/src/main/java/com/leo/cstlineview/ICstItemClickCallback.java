@@ -7,6 +7,6 @@ import android.view.View;
  * On 2019/6/7
  * Description:
  */
-public interface OnCstItemClickCallback {
+public interface ICstItemClickCallback {
     void onItemClicked(View v, Object obj, int position);
 }

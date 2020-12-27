@@ -4,7 +4,7 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public interface ICreateAdapterCallback {
+public interface ICreateAdapter {
     RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType);
 
     void bindHold(RecyclerView.ViewHolder holder, int position);

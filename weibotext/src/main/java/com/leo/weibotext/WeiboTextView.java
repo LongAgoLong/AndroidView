@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.leo.weibotext.callback.OnWBClickImpl;
+import com.leo.weibotext.callback.IWBClickImpl;
 import com.leo.weibotext.callback.WBImpl;
 import com.leo.weibotext.enume.WBClickMode;
 import com.leo.weibotext.enume.WBTextMode;
@@ -27,7 +27,7 @@ import com.leo.weibotext.span.CstClickableSpan;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeiboTextView extends TextView {
+public class WeiboTextView extends androidx.appcompat.widget.AppCompatTextView {
     @WBTextMode
     private int wbMode = WBTextMode.ALL;
     private int wbColor = Color.BLUE;
@@ -35,7 +35,7 @@ public class WeiboTextView extends TextView {
     private boolean wbTopicClickEnable;
     private String wbHtmlReplace;
     private WBImpl wbImpl = WBImpl.DEFAULT;
-    private OnWBClickImpl onWBClickImpl;
+    private IWBClickImpl iWBClickImpl;
 
     public WeiboTextView(Context context) {
         super(context);
@@ -84,8 +84,8 @@ public class WeiboTextView extends TextView {
                             link[0].onClick(tv);
                         } else {
                             //do textview click event
-                            if (null != onWBClickImpl) {
-                                onWBClickImpl.onViewClick(WeiboTextView.this);
+                            if (null != iWBClickImpl) {
+                                iWBClickImpl.onViewClick(WeiboTextView.this);
                             }
                         }
                     }
@@ -321,8 +321,8 @@ public class WeiboTextView extends TextView {
             CstClickableSpan clickableSpan = new CstClickableSpan(wbColor) {
                 @Override
                 public void onClick(View widget) {
-                    if (null != onWBClickImpl) {
-                        onWBClickImpl.onContentClick(WBClickMode.CALL, at);
+                    if (null != iWBClickImpl) {
+                        iWBClickImpl.onContentClick(WBClickMode.CALL, at);
                     }
                 }
             };
@@ -338,8 +338,8 @@ public class WeiboTextView extends TextView {
             CstClickableSpan clickableSpan = new CstClickableSpan(wbColor) {
                 @Override
                 public void onClick(View widget) {
-                    if (null != onWBClickImpl) {
-                        onWBClickImpl.onContentClick(WBClickMode.TOPIC, topic);
+                    if (null != iWBClickImpl) {
+                        iWBClickImpl.onContentClick(WBClickMode.TOPIC, topic);
                     }
                 }
             };
@@ -354,8 +354,8 @@ public class WeiboTextView extends TextView {
         CstClickableSpan clickableSpan = new CstClickableSpan(wbColor) {
             @Override
             public void onClick(View widget) {
-                if (null != onWBClickImpl) {
-                    onWBClickImpl.onContentClick(WBClickMode.HTML, url);
+                if (null != iWBClickImpl) {
+                    iWBClickImpl.onContentClick(WBClickMode.HTML, url);
                 }
             }
         };
@@ -416,11 +416,11 @@ public class WeiboTextView extends TextView {
         this.wbImpl = wbImpl;
     }
 
-    public OnWBClickImpl getOnWBClickImpl() {
-        return onWBClickImpl;
+    public IWBClickImpl getiWBClickImpl() {
+        return iWBClickImpl;
     }
 
-    public void setOnWBClickImpl(OnWBClickImpl onWBClick) {
-        this.onWBClickImpl = onWBClick;
+    public void setiWBClickImpl(IWBClickImpl onWBClick) {
+        this.iWBClickImpl = onWBClick;
     }
 }

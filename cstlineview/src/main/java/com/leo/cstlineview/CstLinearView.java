@@ -15,7 +15,7 @@ public class CstLinearView extends LinearLayout {
     private AdapterDataSetObserver mDataSetObserver;
 
     private CstBaseAdapter adapter;
-    private OnCstItemClickCallback onCstItemClickCallback;
+    private ICstItemClickCallback iCstItemClickCallback;
 
     public CstLinearView(Context context) {
         super(context);
@@ -38,8 +38,8 @@ public class CstLinearView extends LinearLayout {
         bindView();
     }
 
-    public void setOnItemClickCallback(final OnCstItemClickCallback onCstItemClickCallback) {
-        this.onCstItemClickCallback = onCstItemClickCallback;
+    public void setOnItemClickCallback(final ICstItemClickCallback iCstItemClickCallback) {
+        this.iCstItemClickCallback = iCstItemClickCallback;
         if (adapter != null) {
             for (int i = 0; i < getChildCount(); i++) {
                 View view = getChildAt(i);
@@ -48,8 +48,8 @@ public class CstLinearView extends LinearLayout {
                 view.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (onCstItemClickCallback != null) {
-                            onCstItemClickCallback.onItemClicked(view, obj, tmp);
+                        if (iCstItemClickCallback != null) {
+                            iCstItemClickCallback.onItemClicked(view, obj, tmp);
                         }
                     }
                 });
@@ -85,12 +85,12 @@ public class CstLinearView extends LinearLayout {
             /**
              * view 点击事件触发时回调我们自己的接口
              */
-            if (onCstItemClickCallback != null) {
+            if (iCstItemClickCallback != null) {
                 view.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (onCstItemClickCallback != null) {
-                            onCstItemClickCallback.onItemClicked(v, obj, tmp);
+                        if (iCstItemClickCallback != null) {
+                            iCstItemClickCallback.onItemClicked(v, obj, tmp);
                         }
                     }
                 });

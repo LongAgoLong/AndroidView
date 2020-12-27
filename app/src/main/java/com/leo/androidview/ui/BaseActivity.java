@@ -1,4 +1,4 @@
-package com.leo.androidview;
+package com.leo.androidview.ui;
 
 import android.view.View;
 import android.view.ViewGroup;

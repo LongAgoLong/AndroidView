@@ -12,21 +12,19 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
-import com.leo.weibotext.callback.OnWBClickImpl;
-import com.leo.weibotext.callback.OnWBKeyListener;
-import com.leo.weibotext.callback.OnWBTouchListener;
+import com.leo.weibotext.callback.IWBClickImpl;
+import com.leo.weibotext.callback.IWBKeyListener;
+import com.leo.weibotext.callback.IWBTouchListener;
 import com.leo.weibotext.callback.WBImpl;
 import com.leo.weibotext.enume.WBClickMode;
 import com.leo.weibotext.enume.WBEditMode;
-import com.leo.weibotext.enume.WBTextMode;
 import com.leo.weibotext.span.CstClickableSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeiboEditText extends EditText {
+public class WeiboEditText extends androidx.appcompat.widget.AppCompatEditText {
     @WBEditMode
     private int wbMode = WBEditMode.ALL;
     private int wbColor = Color.BLUE;
@@ -35,9 +33,9 @@ public class WeiboEditText extends EditText {
     private WBImpl wbImpl = WBImpl.DEFAULT;
     // 唯一性校验
     private boolean isWbUniquenessCheck;
-    private OnWBClickImpl onWBClickImpl;
-    private OnWBKeyListener onWBKeyListener;
-    private OnWBTouchListener onWBTouchListener;
+    private IWBClickImpl iWBClickImpl;
+    private IWBKeyListener iWBKeyListener;
+    private IWBTouchListener iWBTouchListener;
 
     public WeiboEditText(Context context) {
         super(context);
@@ -71,13 +69,13 @@ public class WeiboEditText extends EditText {
                 return (keyCode == KeyEvent.KEYCODE_DEL
                         && event.getAction() == KeyEvent.ACTION_DOWN
                         && matchDelete())
-                        || (null != onWBKeyListener && onWBKeyListener.onKey(v, keyCode, event));
+                        || (null != iWBKeyListener && iWBKeyListener.onKey(v, keyCode, event));
             }
         });
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return setScrollEditText(event) || (null != onWBTouchListener && onWBTouchListener.onTouch(v, event));
+                return setScrollEditText(event) || (null != iWBTouchListener && iWBTouchListener.onTouch(v, event));
             }
         });
     }
@@ -160,8 +158,8 @@ public class WeiboEditText extends EditText {
                         CstClickableSpan clickableSpan = new CstClickableSpan(wbColor) {
                             @Override
                             public void onClick(View widget) {
-                                if (null != onWBClickImpl) {
-                                    onWBClickImpl.onContentClick(WBClickMode.TOPIC, at);
+                                if (null != iWBClickImpl) {
+                                    iWBClickImpl.onContentClick(WBClickMode.TOPIC, at);
                                 }
                             }
                         };
@@ -180,8 +178,8 @@ public class WeiboEditText extends EditText {
                         CstClickableSpan clickableSpan = new CstClickableSpan(wbColor) {
                             @Override
                             public void onClick(View widget) {
-                                if (null != onWBClickImpl) {
-                                    onWBClickImpl.onContentClick(WBClickMode.TOPIC, topic);
+                                if (null != iWBClickImpl) {
+                                    iWBClickImpl.onContentClick(WBClickMode.TOPIC, topic);
                                 }
                             }
                         };
@@ -285,7 +283,7 @@ public class WeiboEditText extends EditText {
         return wbMode;
     }
 
-    public void setWbMode(int wbMode) {
+    public void setWbMode(@WBEditMode int wbMode) {
         this.wbMode = wbMode;
     }
 
@@ -329,27 +327,27 @@ public class WeiboEditText extends EditText {
         isWbUniquenessCheck = wbUniquenessCheck;
     }
 
-    public OnWBClickImpl getOnWBClickImpl() {
-        return onWBClickImpl;
+    public IWBClickImpl getWBClickImpl() {
+        return iWBClickImpl;
     }
 
-    public void setOnWBClickImpl(OnWBClickImpl onWBClickImpl) {
-        this.onWBClickImpl = onWBClickImpl;
+    public void setWBClickImpl(IWBClickImpl iWBClickImpl) {
+        this.iWBClickImpl = iWBClickImpl;
     }
 
-    public OnWBKeyListener getOnWBKeyListener() {
-        return onWBKeyListener;
+    public IWBKeyListener getWBKeyListener() {
+        return iWBKeyListener;
     }
 
-    public void setOnWBKeyListener(OnWBKeyListener onWBKeyListener) {
-        this.onWBKeyListener = onWBKeyListener;
+    public void setiWBKeyListener(IWBKeyListener iWBKeyListener) {
+        this.iWBKeyListener = iWBKeyListener;
     }
 
-    public OnWBTouchListener getOnWBTouchListener() {
-        return onWBTouchListener;
+    public IWBTouchListener getiWBTouchListener() {
+        return iWBTouchListener;
     }
 
-    public void setOnWBTouchListener(OnWBTouchListener onWBTouchListener) {
-        this.onWBTouchListener = onWBTouchListener;
+    public void setiWBTouchListener(IWBTouchListener iWBTouchListener) {
+        this.iWBTouchListener = iWBTouchListener;
     }
 }
