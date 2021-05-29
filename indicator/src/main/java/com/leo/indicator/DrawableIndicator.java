@@ -182,7 +182,7 @@ public class DrawableIndicator extends LinearLayout {
         }
     };
 
-    private DataSetObserver mInternalDataSetObserver = new DataSetObserver() {
+    private final DataSetObserver mInternalDataSetObserver = new DataSetObserver() {
         @Override
         public void onChanged() {
             super.onChanged();
@@ -249,7 +249,7 @@ public class DrawableIndicator extends LinearLayout {
         animator.start();
     }
 
-    private class ReverseInterpolator implements Interpolator {
+    private static class ReverseInterpolator implements Interpolator {
         @Override
         public float getInterpolation(float value) {
             return Math.abs(1.0f - value);

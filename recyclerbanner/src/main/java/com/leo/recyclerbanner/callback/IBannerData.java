@@ -1,5 +1,5 @@
 package com.leo.recyclerbanner.callback;
 
-public interface IBannerEntity {
+public interface IBannerData {
     String getUrl();
 }

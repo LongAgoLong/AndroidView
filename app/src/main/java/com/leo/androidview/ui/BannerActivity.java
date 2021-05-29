@@ -15,11 +15,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.leo.androidview.R;
-import com.leo.androidview.entity.BannerEntity;
-import com.leo.recyclerbanner.RecyclerBanner;
-import com.leo.recyclerbanner.callback.ICreateAdapter;
+import com.leo.androidview.adapter.BannerAdapter;
+import com.leo.androidview.entity.BannerData;
+import com.leo.recyclerbanner.XBanner;
+import com.leo.recyclerbanner.XBannerAdapter;
+import com.leo.recyclerbanner.callback.IBannerData;
+import com.leo.recyclerbanner.callback.IPageClickListener;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by LEO
@@ -28,8 +33,8 @@ import java.util.ArrayList;
  */
 public class BannerActivity extends BaseActivity {
     private TextView mResultTv;
-    private RecyclerBanner mBanner;
-    private ArrayList<BannerEntity> list;
+    private XBanner mBanner;
+    private ArrayList<BannerData> list;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,10 +45,11 @@ public class BannerActivity extends BaseActivity {
     }
 
     private void initData() {
-        list = new ArrayList<BannerEntity>() {{
-            add(new BannerEntity());
-            add(new BannerEntity());
-            add(new BannerEntity());
+        Random random = new Random();
+        list = new ArrayList<BannerData>() {{
+            for (int i = 0; i < 10; i++) {
+                add(new BannerData(String.valueOf(random.nextInt())));
+            }
         }};
     }
 
@@ -51,38 +57,14 @@ public class BannerActivity extends BaseActivity {
         mResultTv = findViewById(R.id.resultTv);
 
         mBanner = findViewById(R.id.banner);
-        mBanner.init(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        mBanner.setAdapter(new ICreateAdapter() {
-            @Override
-            public RecyclerView.ViewHolder createHold(ViewGroup parent, int viewType) {
-                return new ImgHold(LayoutInflater.from(BannerActivity.this).inflate(R.layout.item_banner, parent,
-                        false));
-            }
-
-            @Override
-            public void bindHold(RecyclerView.ViewHolder holder, int position) {
-                if (holder instanceof ImgHold) {
-                    ImgHold imgHold = (ImgHold) holder;
-                    int i = mBanner.pos2Index(position);
-                    switch (i) {
-                        case 0:
-                            imgHold.mImg.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-                            break;
-                        case 1:
-                            imgHold.mImg.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                            break;
-                        default:
-                            imgHold.mImg.setBackgroundColor(getResources().getColor(R.color.color_13b5b1));
-                            break;
-                    }
-                }
-            }
+        BannerAdapter adapter = new BannerAdapter();
+        mBanner.setIntervalMilli(3000);
+        mBanner.setXBannerAdapter(adapter);
+        adapter.updateData(list);
+        adapter.setPageClickListener((position, entity, view) -> {
+            mResultTv.setText(String.format("click-currentIndex:%d", position));
         });
-        mBanner.addPageChangeCallback((realPos, isUserTouch) -> mResultTv.setText(String.format("currentIndex:%d", realPos)));
-        mBanner.setPageClickCallback((position, entity, view) -> {
-
-        });
-        mBanner.setDates(list);
+        mBanner.addPageSelectedListener((realPos, isUserTouch) -> mResultTv.setText(String.format("currentIndex:%d", realPos)));
     }
 
     @Override
@@ -102,14 +84,5 @@ public class BannerActivity extends BaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private static class ImgHold extends RecyclerView.ViewHolder {
-        public ImageView mImg;
-
-        public ImgHold(@NonNull View itemView) {
-            super(itemView);
-            mImg = itemView.findViewById(R.id.img);
-        }
     }
 }

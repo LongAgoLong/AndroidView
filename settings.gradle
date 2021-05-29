@@ -1,3 +1,2 @@
-include ':layoutmanager'
 include ':app', ':imageview', ':cstlineview', ':indicator', ':weibotext', ':recyclerbanner'
 rootProject.name='AndroidView'

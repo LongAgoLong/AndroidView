@@ -1,18 +1,21 @@
-package com.leo.layoutmanager;
+package com.leo.recyclerbanner.layoutmanager;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-public class RepeatLayoutManager extends RecyclerView.LayoutManager {
+public class RepeatLayoutManager extends LinearLayoutManager {
     private Context mContext;
     @RecyclerView.Orientation
-    private int mOrientation = RecyclerView.HORIZONTAL;
+    private int mOrientation;
 
     public RepeatLayoutManager(Context context, @RecyclerView.Orientation int orientation) {
+        super(context, orientation, false);
         mContext = context;
         mOrientation = orientation;
     }
@@ -256,4 +259,17 @@ public class RepeatLayoutManager extends RecyclerView.LayoutManager {
         }
     }
 
+    @Override
+    public PointF computeScrollVectorForPosition(int targetPosition) {
+        if (getChildCount() == 0) {
+            return null;
+        }
+        // 设置一直往右往下寻找view
+        final int direction = 1;
+        if (mOrientation == HORIZONTAL) {
+            return new PointF(direction, 0);
+        } else {
+            return new PointF(0, direction);
+        }
+    }
 }

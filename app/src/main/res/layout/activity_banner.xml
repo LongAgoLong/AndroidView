@@ -7,13 +7,12 @@
     android:orientation="vertical"
     tools:context=".ui.BannerActivity">
 
-    <com.leo.recyclerbanner.RecyclerBanner
+    <com.leo.recyclerbanner.XBanner
         android:id="@+id/banner"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:rb_intervalTime="4000"
-        app:rb_isAutoPlay="true"
-        app:rb_isLoop="true" />
+        app:intervalTime="3000"
+        app:orientation="horizontal" />
 
     <TextView
         android:id="@+id/resultTv"

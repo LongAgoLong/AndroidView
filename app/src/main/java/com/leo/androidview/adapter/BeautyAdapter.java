@@ -49,7 +49,7 @@ public class BeautyAdapter extends RecyclerView.Adapter<BeautyAdapter.VHolder> {
         return mData.size();
     }
 
-    static class VHolder extends RecyclerView.ViewHolder {
+    protected static class VHolder extends RecyclerView.ViewHolder {
         private String data;
 
         private TextView tvDesc;
