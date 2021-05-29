@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.OrientationHelper;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -86,11 +85,12 @@ public class XBanner extends RecyclerView {
             @Override
             public int findTargetSnapPosition(LayoutManager layoutManager, int velocityX, int velocityY) {
                 int targetPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY);
-                notifyPageSelected(targetPos);
+                notifyPageSelected(targetPos, true);
                 return targetPos;
             }
         };
         snapHelper.attachToRecyclerView(this);
+        notifyPageSelected(currentIndex, false);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class XBanner extends RecyclerView {
                 return;
             }
             smoothScrollToPosition(index);
-            notifyPageSelected(index);
+            notifyPageSelected(index, false);
         }, 100);
     }
 
@@ -210,15 +210,15 @@ public class XBanner extends RecyclerView {
             }
             smoothScrollToPosition(index);
             resetDelayed();
-            notifyPageSelected(index);
+            notifyPageSelected(index, false);
         }
     };
 
-    private synchronized void notifyPageSelected(int index) {
+    private synchronized void notifyPageSelected(int index, boolean isUserTouch) {
         if (index >= 0) {
             currentIndex = index;
             for (IPageSelectedListener iPageSelectedListener : iPageSelectedListeners) {
-                iPageSelectedListener.onPageSelect(currentIndex, false);
+                iPageSelectedListener.onPageSelect(currentIndex, isUserTouch);
             }
         }
     }

@@ -59,12 +59,12 @@ public class BannerActivity extends BaseActivity {
         mBanner = findViewById(R.id.banner);
         BannerAdapter adapter = new BannerAdapter();
         mBanner.setIntervalMilli(3000);
+        mBanner.addPageSelectedListener((realPos, isUserTouch) -> mResultTv.setText(String.format("currentIndex:%d", realPos)));
         mBanner.setXBannerAdapter(adapter);
         adapter.updateData(list);
         adapter.setPageClickListener((position, entity, view) -> {
             mResultTv.setText(String.format("click-currentIndex:%d", position));
         });
-        mBanner.addPageSelectedListener((realPos, isUserTouch) -> mResultTv.setText(String.format("currentIndex:%d", realPos)));
     }
 
     @Override
