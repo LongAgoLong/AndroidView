@@ -2,7 +2,7 @@ package com.leo.weibotext.callback;
 
 import android.view.View;
 
-import com.leo.weibotext.enume.WBClickMode;
+import com.leo.weibotext.mode.WBClickMode;
 
 public interface IWBClickImpl {
     class IWBClickImplAdapter implements IWBClickImpl {

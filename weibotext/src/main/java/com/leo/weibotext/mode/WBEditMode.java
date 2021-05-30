@@ -1,4 +1,4 @@
-package com.leo.weibotext.enume;
+package com.leo.weibotext.mode;
 
 import androidx.annotation.IntDef;
 

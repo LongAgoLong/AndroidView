@@ -1,29 +1,17 @@
 package com.leo.androidview.ui;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.leo.androidview.R;
 import com.leo.androidview.adapter.BannerAdapter;
 import com.leo.androidview.entity.BannerData;
 import com.leo.recyclerbanner.XBanner;
-import com.leo.recyclerbanner.XBannerAdapter;
-import com.leo.recyclerbanner.callback.IBannerData;
-import com.leo.recyclerbanner.callback.IPageClickListener;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -75,14 +63,5 @@ public class BannerActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("Banner控件");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

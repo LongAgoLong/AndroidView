@@ -22,21 +22,30 @@ import java.util.List;
 /**
  * Created by LEO
  * On 2019/6/24
- * Description:轮播图
+ * Description:轮播图控件封装
  */
 public class XBanner extends RecyclerView {
+    /**
+     * 最小轮播间隔时间
+     */
+    private static final int INTERVAL_MIN_TIME = 1000;
+    /**
+     * 默认轮播间隔时间
+     */
     private static final int INTERVAL_TIME = 4000;
+    private int intervalMilli = INTERVAL_TIME;
 
     private final List<IPageSelectedListener> iPageSelectedListeners = new ArrayList<>();
     private XBannerAdapter adapter;
-    private int intervalMilli = INTERVAL_TIME;
-
     private int currentIndex;
+
     private int startX, startY;
 
-    private boolean isPlaying;
-
     private static final Handler mUIHandler = new Handler(Looper.getMainLooper());
+    /**
+     * 是否正在轮播
+     */
+    private boolean isPlaying;
     private int orientation;
 
     public XBanner(Context context) {
@@ -131,12 +140,20 @@ public class XBanner extends RecyclerView {
     }
 
     public void setCurrentIndex(int index) {
+        setCurrentIndex(index, true);
+    }
+
+    public void setCurrentIndex(int index, boolean withAnim) {
         mUIHandler.postDelayed(() -> {
             if (null == adapter || adapter.getItemCount() == 0
                     || index >= adapter.getItemCount()) {
                 return;
             }
-            smoothScrollToPosition(index);
+            if (withAnim) {
+                smoothScrollToPosition(index);
+            } else {
+                scrollToPosition(index);
+            }
             notifyPageSelected(index, false);
         }, 100);
     }
@@ -161,20 +178,20 @@ public class XBanner extends RecyclerView {
     /**
      * 间隔时间
      *
-     * @param millisecond
+     * @param millisecond 设置为0，不会自动轮播
      */
     public void setIntervalMilli(int millisecond) {
         if (millisecond <= 0) {
             intervalMilli = 0;
-        } else if (intervalMilli < 2000) {
-            intervalMilli = 2000;
+        } else if (intervalMilli < INTERVAL_MIN_TIME) {
+            intervalMilli = INTERVAL_MIN_TIME;
         } else {
             intervalMilli = millisecond;
         }
     }
 
     private boolean isAutoPlay() {
-        return intervalMilli >= 2000;
+        return intervalMilli >= INTERVAL_MIN_TIME;
     }
 
     public boolean isPlaying() {

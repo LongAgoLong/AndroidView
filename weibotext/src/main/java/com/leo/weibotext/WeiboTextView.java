@@ -17,17 +17,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import com.leo.weibotext.callback.IWBClickImpl;
 import com.leo.weibotext.callback.WBImpl;
-import com.leo.weibotext.enume.WBClickMode;
-import com.leo.weibotext.enume.WBTextMode;
+import com.leo.weibotext.mode.WBClickMode;
+import com.leo.weibotext.mode.WBTextMode;
 import com.leo.weibotext.span.CstClickableSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeiboTextView extends androidx.appcompat.widget.AppCompatTextView {
+public class WeiboTextView extends AppCompatTextView {
     @WBTextMode
     private int wbMode = WBTextMode.ALL;
     private int wbColor = Color.BLUE;
@@ -101,9 +102,6 @@ public class WeiboTextView extends androidx.appcompat.widget.AppCompatTextView {
         //设置正则
         Pattern pattern;
         switch (wbMode) {
-            case WBTextMode.ALL:
-                pattern = Pattern.compile(wbImpl.getAllRegular());
-                break;
             case WBTextMode.CALL:
                 pattern = Pattern.compile(wbImpl.getCallRegular());
                 break;
@@ -122,6 +120,7 @@ public class WeiboTextView extends androidx.appcompat.widget.AppCompatTextView {
             case WBTextMode.TOPIC_AND_HTML:
                 pattern = Pattern.compile(wbImpl.getTopicAndHtmlRegular());
                 break;
+            case WBTextMode.ALL:
             default:
                 pattern = Pattern.compile(wbImpl.getAllRegular());
                 break;

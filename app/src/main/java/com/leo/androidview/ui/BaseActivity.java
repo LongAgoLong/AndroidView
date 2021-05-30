@@ -1,5 +1,6 @@
 package com.leo.androidview.ui;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,5 +26,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void initActionBar() {
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

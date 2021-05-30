@@ -3,6 +3,7 @@ package com.leo.weibotext;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -13,18 +14,20 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.appcompat.widget.AppCompatEditText;
+
 import com.leo.weibotext.callback.IWBClickImpl;
 import com.leo.weibotext.callback.IWBKeyListener;
 import com.leo.weibotext.callback.IWBTouchListener;
 import com.leo.weibotext.callback.WBImpl;
-import com.leo.weibotext.enume.WBClickMode;
-import com.leo.weibotext.enume.WBEditMode;
+import com.leo.weibotext.mode.WBClickMode;
+import com.leo.weibotext.mode.WBEditMode;
 import com.leo.weibotext.span.CstClickableSpan;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WeiboEditText extends androidx.appcompat.widget.AppCompatEditText {
+public class WeiboEditText extends AppCompatEditText {
     @WBEditMode
     private int wbMode = WBEditMode.ALL;
     private int wbColor = Color.BLUE;
@@ -202,7 +205,11 @@ public class WeiboEditText extends androidx.appcompat.widget.AppCompatEditText {
     private boolean matchDelete() {
         try {
             int selectionStart = getSelectionStart();
-            String str = getText().toString();
+            Editable text = getText();
+            if (null == text) {
+                return false;
+            }
+            String str = text.toString();
             String s = str.substring(0, selectionStart);
             String s_last = str.substring(selectionStart);
             if (!TextUtils.isEmpty(s)) {
@@ -339,15 +346,15 @@ public class WeiboEditText extends androidx.appcompat.widget.AppCompatEditText {
         return iWBKeyListener;
     }
 
-    public void setiWBKeyListener(IWBKeyListener iWBKeyListener) {
+    public void setWBKeyListener(IWBKeyListener iWBKeyListener) {
         this.iWBKeyListener = iWBKeyListener;
     }
 
-    public IWBTouchListener getiWBTouchListener() {
+    public IWBTouchListener getWBTouchListener() {
         return iWBTouchListener;
     }
 
-    public void setiWBTouchListener(IWBTouchListener iWBTouchListener) {
+    public void setWBTouchListener(IWBTouchListener iWBTouchListener) {
         this.iWBTouchListener = iWBTouchListener;
     }
 }

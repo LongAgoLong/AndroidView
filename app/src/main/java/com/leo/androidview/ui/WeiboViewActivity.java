@@ -1,7 +1,6 @@
 package com.leo.androidview.ui;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -13,7 +12,7 @@ import com.leo.androidview.R;
 import com.leo.weibotext.WeiboEditText;
 import com.leo.weibotext.WeiboTextView;
 import com.leo.weibotext.callback.IWBClickImpl;
-import com.leo.weibotext.enume.WBClickMode;
+import com.leo.weibotext.mode.WBClickMode;
 
 /**
  * Created by LEO
@@ -44,15 +43,6 @@ public class WeiboViewActivity extends BaseActivity implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle("仿微博@#控件");
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void initView() {

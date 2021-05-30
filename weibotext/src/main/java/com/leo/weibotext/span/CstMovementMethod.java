@@ -14,11 +14,6 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 
 
-/**
- * @author yiw
- * @Description:
- * @date 16/1/2 16:54
- */
 public class CstMovementMethod extends LinkMovementMethod {
     @ColorInt
     private int mClickBgColorInt;
