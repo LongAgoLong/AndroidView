@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalendarView">
+        <!--是否绘制边框线-->
+        <attr name="calendar_isWithLine" format="boolean" />
+        <attr name="calendar_lineSize" format="dimension" />
+        <attr name="calendar_lineColor" format="color|reference" />
+        <!--宽高比例-->
+        <attr name="calendar_squareWidhtHeightRatio" format="float" />
+        <!--月份文字颜色-->
+        <attr name="calendar_textColor_otherMonth" format="color|reference" />
+        <attr name="calendar_textColor_currentMonth" format="color|reference" />
+        <attr name="calendar_textColor_currentDay" format="color|reference" />
+
+        <attr name="calendar_textColor_tab_weekend" format="color|reference" />
+        <attr name="calendar_textColor_tab_workday" format="color|reference" />
+        <!--文本大小-->
+        <attr name="calendar_dayTextSize" format="dimension" />
+
+        <attr name="calendar_cellCorner" format="dimension" />
+        <attr name="calendar_cellDividerSize" format="dimension" />
+
+        <attr name="calendar_bgColor_lastMonthCell" format="color|reference" />
+        <attr name="calendar_bgColor_nextMonthCell" format="color|reference" />
+        <attr name="calendar_bgColor_currentMonthCell" format="color|reference" />
+        <attr name="calendar_bgColor_currentDayCell" format="color|reference" />
+    </declare-styleable>
+</resources>

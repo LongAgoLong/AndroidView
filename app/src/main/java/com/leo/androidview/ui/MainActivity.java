@@ -1,5 +1,6 @@
 package com.leo.androidview.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
@@ -22,12 +23,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public static class EventListener {
-        private WeakReference<MainActivity> reference;
+        private final WeakReference<MainActivity> reference;
 
         public EventListener(MainActivity activity) {
             this.reference = new WeakReference<>(activity);
         }
 
+        @SuppressLint("NonConstantResourceId")
         public void onClick(View v) {
             MainActivity activity = reference.get();
             if (null == activity) {
@@ -45,6 +47,9 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.repeatLayoutBtn:
                     IntentUtil.INSTANCE.startActivity(activity, RepeatManagerActivity.class);
+                    break;
+                case R.id.calendarViewBtn:
+                    IntentUtil.INSTANCE.startActivity(activity, CalendarViewActivity.class);
                     break;
                 default:
                     break;

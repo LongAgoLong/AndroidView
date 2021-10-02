@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.leo.calendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:calendar_bgColor_currentDayCell="@color/color_ffb926"
+            app:calendar_bgColor_currentMonthCell="@android:color/white"
+            app:calendar_bgColor_lastMonthCell="@color/color_f1f1f1"
+            app:calendar_bgColor_nextMonthCell="@color/color_f1f1f1"
+            app:calendar_cellCorner="5dp"
+            app:calendar_cellDividerSize="1.5dp"
+            app:calendar_isWithLine="false"
+            app:calendar_squareWidhtHeightRatio="0.8"
+            app:calendar_textColor_currentDay="@android:color/white"
+            app:calendar_textColor_currentMonth="@color/calendar_default_text"
+            app:calendar_textColor_otherMonth="@color/calendar_default_text"
+            app:calendar_textColor_tab_weekend="@color/calendar_weekend_text"
+            app:calendar_textColor_tab_workday="@color/calendar_workday_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

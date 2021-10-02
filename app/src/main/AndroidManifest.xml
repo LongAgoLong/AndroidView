@@ -22,6 +22,7 @@
         <activity android:name=".ui.ImageActivity" />
         <activity android:name=".ui.BannerActivity" />
         <activity android:name=".ui.RepeatManagerActivity" />
+        <activity android:name=".ui.CalendarViewActivity" />
     </application>
 
 </manifest>
