@@ -18,6 +18,8 @@
             app:calendar_bgColor_currentMonthCell="@color/calendar_bg_current_month"
             app:calendar_bgColor_lastMonthCell="@color/calendar_bg_other_month"
             app:calendar_bgColor_nextMonthCell="@color/calendar_bg_other_month"
+            app:calendar_bgColor_tab="@color/calendar_bg_tab"
+            app:calendar_bgColor_tab_icon="@color/calendar_bg_tab_icon"
             app:calendar_cellCorner="5dp"
             app:calendar_cellDividerSize="1.5dp"
             app:calendar_isWithLine="false"

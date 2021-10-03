@@ -24,5 +24,7 @@
         <attr name="calendar_bgColor_nextMonthCell" format="color|reference" />
         <attr name="calendar_bgColor_currentMonthCell" format="color|reference" />
         <attr name="calendar_bgColor_currentDayCell" format="color|reference" />
+        <attr name="calendar_bgColor_tab" format="color|reference" />
+        <attr name="calendar_bgColor_tab_icon" format="color|reference" />
     </declare-styleable>
 </resources>

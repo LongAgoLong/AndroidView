@@ -113,6 +113,8 @@ public class CalendarView extends View implements View.OnTouchListener {
             surface.cellBgColorLastMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_lastMonthCell, 0x00ffffff);
             surface.cellBgColorNextMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_nextMonthCell, 0x00ffffff);
             surface.cellBgColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentDayCell, 0x00ffffff);
+            surface.bgColorTab = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab, Color.WHITE);
+            surface.bgColorTabIcon = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab_icon, Color.WHITE);
 
             attributes.recycle();
         }
@@ -140,64 +142,30 @@ public class CalendarView extends View implements View.OnTouchListener {
         }
         // 星期
         int halfItemSpace = surface.itemSpace / 2;
-
-        surface.path.reset();
-        surface.path.moveTo(halfItemSpace, surface.cellHeight - halfItemSpace);
-        surface.path.lineTo(surface.width - halfItemSpace, surface.cellHeight - halfItemSpace);
-        surface.path.lineTo(surface.width - halfItemSpace, 30);
-        surface.rectF.set(surface.width - halfItemSpace - 30 * 2, 0, surface.width - halfItemSpace, 30 * 2);
-        surface.path.arcTo(surface.rectF, 0, -90);
-        surface.path.lineTo(30, 0);
-        surface.rectF.set(halfItemSpace, 0, halfItemSpace + 30 * 2, 30 * 2);
-        surface.path.arcTo(surface.rectF, -90, -90);
-        surface.path.close();
-        surface.datePaint.setColor(Color.parseColor("#88ffffff"));
-        canvas.drawPath(surface.path, surface.datePaint);
-
-        int radius = surface.textSize;
-        for (int i = 0; i < surface.weekText.length; i++) {
-            surface.rect.set((int) (i * surface.cellWidth), 0, (int) ((i + 1) * surface.cellWidth), (int) surface.cellHeight);
-            Paint.FontMetricsInt fontMetrics = surface.weekPaint.getFontMetricsInt();
-            int baseline = (surface.rect.bottom + surface.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-            if (i == 0 || i == surface.weekText.length - 1) {
-                surface.weekPaint.setColor(surface.textColorTabWeekend);
-            } else {
-                surface.weekPaint.setColor(surface.textColorTabWorkday);
-            }
-
-            surface.datePaint.setColor(Color.WHITE);
-
-
-            surface.rectF.set(surface.rect.centerX() - radius, surface.rect.centerY() - radius, surface.rect.centerX() + radius, surface.rect.centerY() + radius);
-            canvas.drawArc(surface.rectF, 0, 360, true, surface.datePaint);
-            canvas.drawText(surface.weekText[i], surface.rect.centerX(), baseline, surface.weekPaint);
-        }
+        // 绘制tab
+        drawTab(canvas, halfItemSpace);
 
         // 计算日期
         calculateDate();
         // write date number
         // today index
         todayIndex = -1;
+        // 当前显示年份/月份
         calendar.setTime(curDate);
-        String curYearAndMonth = calendar.get(Calendar.YEAR) + "" + calendar.get(Calendar.MONTH);
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        String curYearAndMonth = currentYear + "" + currentMonth;
         calendar.setTime(today);
-        String todayYearAndMonth = calendar.get(Calendar.YEAR) + "" + calendar.get(Calendar.MONTH);
+        String todayYearAndMonth = calendar.get(Calendar.YEAR) + ""
+                + (calendar.get(Calendar.MONTH) + 1);
         if (curYearAndMonth.equals(todayYearAndMonth)) {
             int todayNumber = calendar.get(Calendar.DAY_OF_MONTH);
             todayIndex = curStartIndex + todayNumber - 1;
         }
 
-        // 当前年份
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-        // 当前月份
-        int currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1;
-
         for (int i = 0; i < 42; i++) {
-//            if (todayIndex != -1 && i == todayIndex) {
-//                color = surface.unSelectedTextColor;
-//            }
-
-            drawCell(canvas, surface.rect, i, date[i] + "", i == todayIndex, currentMonth);
+            drawCell(canvas, surface.rect, i, date[i] + "", i == todayIndex,
+                    currentYear, currentMonth);
         }
         super.onDraw(canvas);
     }
@@ -219,14 +187,44 @@ public class CalendarView extends View implements View.OnTouchListener {
         return i / 7 + 1; // 1 2 3 4 5 6
     }
 
+    private void drawTab(Canvas canvas, int halfItemSpace) {
+        surface.path.reset();
+        surface.path.moveTo(halfItemSpace, surface.cellHeight - halfItemSpace);
+        surface.path.lineTo(surface.width - halfItemSpace, surface.cellHeight - halfItemSpace);
+        surface.path.lineTo(surface.width - halfItemSpace, 30);
+        surface.rectF.set(surface.width - halfItemSpace - 30 * 2, 0, surface.width - halfItemSpace, 30 * 2);
+        surface.path.arcTo(surface.rectF, 0, -90);
+        surface.path.lineTo(30, 0);
+        surface.rectF.set(halfItemSpace, 0, halfItemSpace + 30 * 2, 30 * 2);
+        surface.path.arcTo(surface.rectF, -90, -90);
+        surface.path.close();
+        surface.datePaint.setColor(surface.bgColorTab);
+        canvas.drawPath(surface.path, surface.datePaint);
+
+        surface.datePaint.setColor(surface.bgColorTabIcon);
+        int radius = surface.textSize;
+        for (int i = 0; i < surface.weekText.length; i++) {
+            surface.rect.set((int) (i * surface.cellWidth), 0, (int) ((i + 1) * surface.cellWidth), (int) surface.cellHeight);
+            Paint.FontMetricsInt fontMetrics = surface.weekPaint.getFontMetricsInt();
+            int baseline = (surface.rect.bottom + surface.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+            if (i == 0 || i == surface.weekText.length - 1) {
+                surface.weekPaint.setColor(surface.textColorTabWeekend);
+            } else {
+                surface.weekPaint.setColor(surface.textColorTabWorkday);
+            }
+            surface.rectF.set(surface.rect.centerX() - radius, surface.rect.centerY() - radius, surface.rect.centerX() + radius, surface.rect.centerY() + radius);
+            canvas.drawArc(surface.rectF, 0, 360, true, surface.datePaint);
+            canvas.drawText(surface.weekText[i], surface.rect.centerX(), baseline, surface.weekPaint);
+        }
+    }
+
     /**
      * @param canvas
      * @param index
      * @param text
      */
-    private void drawCell(Canvas canvas, Rect targetRect, int index, String text, boolean isCurrentDay, int currentMonth) {
-        int color;
-        int month;
+    private void drawCell(Canvas canvas, Rect targetRect, int index, String text, boolean isCurrentDay,
+                          int currentYear, int currentMonth) {
         int x = getXByIndex(index);
         int y = getYByIndex(index);
 
@@ -239,38 +237,36 @@ public class CalendarView extends View implements View.OnTouchListener {
         surface.rectF.set(targetRect.left + halfItemSpace, targetRect.top + halfItemSpace,
                 targetRect.right - halfItemSpace, targetRect.bottom - halfItemSpace);
 
-        // type-0上个月;1本月;2下个月
-        int dayType = getDayType(index);
-        switch (dayType) {
-            case 0:
-                // 上个月
-                color = surface.textColorOtherMonth;
+        if (isLastMonth(index)) {
+            // 上个月
+            int color = surface.textColorOtherMonth;
+            int month;
+            if (currentMonth == 1) {
+                month = 12;
+            } else {
                 month = currentMonth - 1;
-
-                surface.datePaint.setColor(surface.cellBgColorLastMonth);
-                canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
-                drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
-                break;
-            case 1:
-                // 本月
-                color = isCurrentDay ? surface.textColorCurrentDay : surface.textColorCurrentMonth;
-                month = currentMonth;
-
-                surface.datePaint.setColor(isCurrentDay ? surface.cellBgColorCurrentDay : surface.cellBgColorCurrentMonth);
-                canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
-                drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
-                break;
-            case 2:
-                // 下个月
-                color = surface.textColorOtherMonth;
+            }
+            surface.datePaint.setColor(surface.cellBgColorLastMonth);
+            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
+        } else if (isNextMonth(index)) {
+            // 下个月
+            int color = surface.textColorOtherMonth;
+            int month;
+            if (currentMonth == 12) {
+                month = 1;
+            } else {
                 month = currentMonth + 1;
-
-                surface.datePaint.setColor(surface.cellBgColorNextMonth);
-                canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
-                drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
-                break;
-            default:
-                break;
+            }
+            surface.datePaint.setColor(surface.cellBgColorNextMonth);
+            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
+        } else {
+            // 本月
+            int color = isCurrentDay ? surface.textColorCurrentDay : surface.textColorCurrentMonth;
+            surface.datePaint.setColor(isCurrentDay ? surface.cellBgColorCurrentDay : surface.cellBgColorCurrentMonth);
+            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            drawCellText(canvas, targetRect, halfItemSpace, color, currentMonth, text);
         }
     }
 
@@ -374,24 +370,6 @@ public class CalendarView extends View implements View.OnTouchListener {
     }
 
     /**
-     * type-0上个月;1本月;2下个月
-     *
-     * @param dayPosition
-     * @return
-     */
-    private int getDayType(int dayPosition) {
-        int type;
-        if (isLastMonth(dayPosition)) {
-            type = 0;
-        } else if (isNextMonth(dayPosition)) {
-            type = 2;
-        } else {
-            type = 1;
-        }
-        return type;
-    }
-
-    /**
      * 属性设置
      */
     private class Surface {
@@ -440,6 +418,14 @@ public class CalendarView extends View implements View.OnTouchListener {
          * 今天日期背景颜色
          */
         private int cellBgColorCurrentDay;
+        /**
+         * tab栏背景色
+         */
+        private int bgColorTab;
+        /**
+         * tab每一项背景色
+         */
+        private int bgColorTabIcon;
 
         private int textSize;
         private int lineSize;

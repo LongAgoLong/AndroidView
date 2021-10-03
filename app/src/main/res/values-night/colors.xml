@@ -13,4 +13,6 @@
     <color name="calendar_default_text">#ffCE7D14</color>
     <color name="calendar_weekend_text">#CE7D14</color>
     <color name="calendar_workday_text">#01C6AA</color>
+    <color name="calendar_bg_tab">#000000</color>
+    <color name="calendar_bg_tab_icon">#C5C5C5</color>
 </resources>
