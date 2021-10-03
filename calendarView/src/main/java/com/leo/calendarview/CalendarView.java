@@ -39,9 +39,6 @@ public class CalendarView extends View implements View.OnTouchListener {
      * 按下的格子索引
      */
     private int downIndex;
-
-    private Date selectedStartDate;
-    private Date selectedEndDate;
     /**
      * 当前日历显示的月
      */
@@ -121,7 +118,7 @@ public class CalendarView extends View implements View.OnTouchListener {
         surface.initPaint();
 
         /*初始化当前日期*/
-        curDate = selectedStartDate = selectedEndDate = today = new Date();
+        curDate = today = new Date();
         calendar = Calendar.getInstance();
         calendar.setTime(curDate);
         setOnTouchListener(this);
@@ -129,8 +126,9 @@ public class CalendarView extends View implements View.OnTouchListener {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (changed && null != surface && surface.isWithLine)
-            surface.initPath();
+        if (changed && null != surface && surface.isWithLine) {
+            surface.initBoxPath();
+        }
         super.onLayout(changed, left, top, right, bottom);
     }
 
@@ -482,8 +480,12 @@ public class CalendarView extends View implements View.OnTouchListener {
             datePaint.setTypeface(Typeface.DEFAULT);
         }
 
-        public void initPath() {
-            boxPath = new Path();
+        public void initBoxPath() {
+            if (boxPath == null) {
+                boxPath = new Path();
+            } else {
+                boxPath.reset();
+            }
             boxPath.rLineTo(width, 0);
             boxPath.moveTo(0, cellHeight);
             boxPath.rLineTo(width, 0);
@@ -523,10 +525,9 @@ public class CalendarView extends View implements View.OnTouchListener {
                 return true;
             case MotionEvent.ACTION_UP:
                 if (downDate != null) {
-                    selectedStartDate = selectedEndDate = downDate;
                     // 响应监听事件
                     if (null != onDataClickListener) {
-                        onDataClickListener.OnItemClick(downIndex, selectedStartDate);
+                        onDataClickListener.OnItemClick(downIndex, downDate);
                     }
                     downDate = null;
                 }
