@@ -40,9 +40,9 @@ public class CalendarView extends View implements View.OnTouchListener {
      */
     private int downIndex;
     /**
-     * 当前日历显示的月
+     * 当前日历显示的年月数据，修改月份改变该值
      */
-    private Date curDate;
+    private Date time;
     /**
      * 今天的日期
      */
@@ -55,7 +55,7 @@ public class CalendarView extends View implements View.OnTouchListener {
      * 日历显示的最后一个日期
      */
     private Date showLastDate;
-    private Calendar calendar;
+    private Calendar mCalendar;
     /**
      * 日历显示数字
      */
@@ -85,6 +85,7 @@ public class CalendarView extends View implements View.OnTouchListener {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         this.context = context;
+        mCalendar = Calendar.getInstance();
 
         // 初始化属性
         surface = new Surface();
@@ -106,10 +107,10 @@ public class CalendarView extends View implements View.OnTouchListener {
             surface.textColorTabWeekend = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_weekend, Color.BLACK);
             surface.textColorTabWorkday = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_workday, Color.BLACK);
 
-            surface.cellBgColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentMonthCell, 0x00ffffff);
-            surface.cellBgColorLastMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_lastMonthCell, 0x00ffffff);
-            surface.cellBgColorNextMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_nextMonthCell, 0x00ffffff);
-            surface.cellBgColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentDayCell, 0x00ffffff);
+            surface.bgColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentMonthCell, 0x00ffffff);
+            surface.bgColorLastMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_lastMonthCell, 0x00ffffff);
+            surface.bgColorNextMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_nextMonthCell, 0x00ffffff);
+            surface.bgColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentDayCell, 0x00ffffff);
             surface.bgColorTab = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab, Color.WHITE);
             surface.bgColorTabIcon = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab_icon, Color.WHITE);
 
@@ -118,9 +119,8 @@ public class CalendarView extends View implements View.OnTouchListener {
         surface.initPaint();
 
         /*初始化当前日期*/
-        curDate = today = new Date();
-        calendar = Calendar.getInstance();
-        calendar.setTime(curDate);
+        time = today = new Date();
+        mCalendar.setTime(time);
         setOnTouchListener(this);
     }
 
@@ -149,15 +149,15 @@ public class CalendarView extends View implements View.OnTouchListener {
         // today index
         todayIndex = -1;
         // 当前显示年份/月份
-        calendar.setTime(curDate);
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH) + 1;
+        mCalendar.setTime(time);
+        int currentYear = mCalendar.get(Calendar.YEAR);
+        int currentMonth = mCalendar.get(Calendar.MONTH) + 1;
         String curYearAndMonth = currentYear + "" + currentMonth;
-        calendar.setTime(today);
-        String todayYearAndMonth = calendar.get(Calendar.YEAR) + ""
-                + (calendar.get(Calendar.MONTH) + 1);
+        mCalendar.setTime(today);
+        String todayYearAndMonth = mCalendar.get(Calendar.YEAR) + ""
+                + (mCalendar.get(Calendar.MONTH) + 1);
         if (curYearAndMonth.equals(todayYearAndMonth)) {
-            int todayNumber = calendar.get(Calendar.DAY_OF_MONTH);
+            int todayNumber = mCalendar.get(Calendar.DAY_OF_MONTH);
             todayIndex = curStartIndex + todayNumber - 1;
         }
 
@@ -168,6 +168,20 @@ public class CalendarView extends View implements View.OnTouchListener {
         super.onDraw(canvas);
     }
 
+    /**
+     * 设置显示月份
+     *
+     * @param monthDate
+     */
+    public void setTime(Date monthDate) {
+        this.time = monthDate;
+        postInvalidate();
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
     private boolean isLastMonth(int i) {
         return i < curStartIndex;
     }
@@ -175,7 +189,6 @@ public class CalendarView extends View implements View.OnTouchListener {
     private boolean isNextMonth(int i) {
         return i >= curEndIndex;
     }
-
 
     private int getXByIndex(int i) {
         return i % 7 + 1; // 1 2 3 4 5 6 7
@@ -244,7 +257,7 @@ public class CalendarView extends View implements View.OnTouchListener {
             } else {
                 month = currentMonth - 1;
             }
-            surface.datePaint.setColor(surface.cellBgColorLastMonth);
+            surface.datePaint.setColor(surface.bgColorLastMonth);
             canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
         } else if (isNextMonth(index)) {
@@ -256,13 +269,13 @@ public class CalendarView extends View implements View.OnTouchListener {
             } else {
                 month = currentMonth + 1;
             }
-            surface.datePaint.setColor(surface.cellBgColorNextMonth);
+            surface.datePaint.setColor(surface.bgColorNextMonth);
             canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
         } else {
             // 本月
             int color = isCurrentDay ? surface.textColorCurrentDay : surface.textColorCurrentMonth;
-            surface.datePaint.setColor(isCurrentDay ? surface.cellBgColorCurrentDay : surface.cellBgColorCurrentMonth);
+            surface.datePaint.setColor(isCurrentDay ? surface.bgColorCurrentDay : surface.bgColorCurrentMonth);
             canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, currentMonth, text);
         }
@@ -273,27 +286,25 @@ public class CalendarView extends View implements View.OnTouchListener {
         surface.datePaint.setColor(color);
         surface.datePaint.setTextSize(surface.daySize);
         surface.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-        surface.rect1.set(targetRect.left + halfItemSpace, targetRect.centerY() - surface.daySize + 15, targetRect.right - halfItemSpace, targetRect.centerY() + 15);
+        surface.rect.set(targetRect.left + halfItemSpace, targetRect.centerY() - surface.daySize + 15, targetRect.right - halfItemSpace, targetRect.centerY() + 15);
         Paint.FontMetricsInt fontMetrics = surface.datePaint.getFontMetricsInt();
-        int baseline = (surface.rect1.bottom + surface.rect1.top - fontMetrics.bottom - fontMetrics.top) / 2;
-        canvas.drawText(text, surface.rect1.centerX(), baseline, surface.datePaint);
+        int baseline = (surface.rect.bottom + surface.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        canvas.drawText(text, surface.rect.centerX(), baseline, surface.datePaint);
 
-        int bottom = surface.rect1.bottom;
+        int bottom = surface.rect.bottom;
         surface.datePaint.setTextSize(surface.monthSize);
         surface.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
-        surface.rect1.top = bottom + 5;
-        surface.rect1.bottom = surface.rect1.top + surface.monthSize;
+        surface.rect.top = bottom + 5;
+        surface.rect.bottom = surface.rect.top + surface.monthSize;
         Paint.FontMetricsInt fontMetrics1 = surface.datePaint.getFontMetricsInt();
-        int baseline1 = (surface.rect1.bottom + surface.rect1.top - fontMetrics1.bottom - fontMetrics1.top) / 2;
-        canvas.drawText(month + "月", surface.rect1.centerX(), baseline1, surface.datePaint);
-
+        int baseline1 = (surface.rect.bottom + surface.rect.top - fontMetrics1.bottom - fontMetrics1.top) / 2;
+        canvas.drawText(month + "月", surface.rect.centerX(), baseline1, surface.datePaint);
     }
 
     private void calculateDate() {
-        calendar.setTime(curDate);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        int dayInWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        int monthStart = dayInWeek;
+        mCalendar.setTime(time);
+        mCalendar.set(Calendar.DAY_OF_MONTH, 1);
+        int monthStart = mCalendar.get(Calendar.DAY_OF_WEEK);
         if (monthStart == 1) {
             monthStart = 8;
         }
@@ -305,20 +316,20 @@ public class CalendarView extends View implements View.OnTouchListener {
         date[monthStart] = 1;
         // last month
         if (monthStart > 0) {
-            calendar.set(Calendar.DAY_OF_MONTH, 0);
-            int dayInmonth = calendar.get(Calendar.DAY_OF_MONTH);
+            mCalendar.set(Calendar.DAY_OF_MONTH, 0);
+            int dayInmonth = mCalendar.get(Calendar.DAY_OF_MONTH);
             for (int i = monthStart - 1; i >= 0; i--) {
                 date[i] = dayInmonth;
                 dayInmonth--;
             }
-            calendar.set(Calendar.DAY_OF_MONTH, date[0]);
+            mCalendar.set(Calendar.DAY_OF_MONTH, date[0]);
         }
-        showFirstDate = calendar.getTime();
+        showFirstDate = mCalendar.getTime();
         // this month
-        calendar.setTime(curDate);
-        calendar.add(Calendar.MONTH, 1);
-        calendar.set(Calendar.DAY_OF_MONTH, 0);
-        int monthDay = calendar.get(Calendar.DAY_OF_MONTH);
+        mCalendar.setTime(time);
+        mCalendar.add(Calendar.MONTH, 1);
+        mCalendar.set(Calendar.DAY_OF_MONTH, 0);
+        int monthDay = mCalendar.get(Calendar.DAY_OF_MONTH);
         for (int i = 1; i < monthDay; i++) {
             date[monthStart + i] = i + 1;
         }
@@ -329,10 +340,10 @@ public class CalendarView extends View implements View.OnTouchListener {
         }
         if (curEndIndex < 42) {
             // 显示了下一月的
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            mCalendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-        calendar.set(Calendar.DAY_OF_MONTH, date[41]);
-        showLastDate = calendar.getTime();
+        mCalendar.set(Calendar.DAY_OF_MONTH, date[41]);
+        showLastDate = mCalendar.getTime();
     }
 
     @Override
@@ -403,19 +414,19 @@ public class CalendarView extends View implements View.OnTouchListener {
         /**
          * 上一个月日期背景颜色
          */
-        private int cellBgColorLastMonth;
+        private int bgColorLastMonth;
         /**
          * 下一个月日期背景颜色
          */
-        private int cellBgColorNextMonth;
+        private int bgColorNextMonth;
         /**
          * 当前月份日期背景颜色
          */
-        private int cellBgColorCurrentMonth;
+        private int bgColorCurrentMonth;
         /**
          * 今天日期背景颜色
          */
-        private int cellBgColorCurrentDay;
+        private int bgColorCurrentDay;
         /**
          * tab栏背景色
          */
@@ -434,7 +445,7 @@ public class CalendarView extends View implements View.OnTouchListener {
 
         public Path boxPath; // 边框路径
 
-        public Rect rect, rect1;
+        public Rect rect;
         public RectF rectF;
         public Path path;
         public int itemSpace;
@@ -448,7 +459,6 @@ public class CalendarView extends View implements View.OnTouchListener {
             weekText = context.getResources().getStringArray(R.array.calendar_tab_week);
 
             rect = new Rect(0, 0, 0, 0);
-            rect1 = new Rect(0, 0, 0, 0);
             rectF = new RectF(0, 0, 0, 0);
             path = new Path();
             tipSize = dip2px(getContext(), 8);
@@ -506,14 +516,14 @@ public class CalendarView extends View implements View.OnTouchListener {
             int n = (int) (Math.floor((y - (surface.cellHeight)) / surface.cellHeight) + 1);
             downIndex = (n - 1) * 7 + m - 1;
 
-            calendar.setTime(curDate);
+            mCalendar.setTime(time);
             if (isLastMonth(downIndex)) {
-                calendar.add(Calendar.MONTH, -1);
+                mCalendar.add(Calendar.MONTH, -1);
             } else if (isNextMonth(downIndex)) {
-                calendar.add(Calendar.MONTH, 1);
+                mCalendar.add(Calendar.MONTH, 1);
             }
-            calendar.set(Calendar.DAY_OF_MONTH, date[downIndex]);
-            downDate = calendar.getTime();
+            mCalendar.set(Calendar.DAY_OF_MONTH, date[downIndex]);
+            downDate = mCalendar.getTime();
         }
     }
 
