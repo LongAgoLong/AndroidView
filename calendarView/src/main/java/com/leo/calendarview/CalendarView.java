@@ -65,7 +65,7 @@ public class CalendarView extends View implements View.OnTouchListener {
      */
     private int curStartIndex, curEndIndex;
 
-    private Surface surface;
+    private Parameter parameter;
     private int todayIndex;
 
     private OnDataClickListener onDataClickListener;
@@ -88,35 +88,38 @@ public class CalendarView extends View implements View.OnTouchListener {
         mCalendar = Calendar.getInstance();
 
         // 初始化属性
-        surface = new Surface();
+        parameter = new Parameter();
         if (attrs != null) {
             TypedArray attributes = context.getTheme().obtainStyledAttributes(attrs, R.styleable.CalendarView, 0, 0);
-            surface.isWithLine = attributes.getBoolean(R.styleable.CalendarView_calendar_isWithLine, false);
-            surface.lineSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_lineSize, dip2px(context, 1));
-            surface.lineColor = attributes.getColor(R.styleable.CalendarView_calendar_lineColor, 0xff000000);
+            parameter.isWithLine = attributes.getBoolean(R.styleable.CalendarView_calendar_isWithLine, false);
+            parameter.lineSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_lineSize, dip2px(context, 1));
+            parameter.lineColor = attributes.getColor(R.styleable.CalendarView_calendar_lineColor, 0xff000000);
 
-            surface.whRatio = attributes.getFloat(R.styleable.CalendarView_calendar_squareWidhtHeightRatio, 1.0f);
-            surface.cellCorner = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_cellCorner, 0);
-            surface.itemSpace = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_cellDividerSize, 0);
+            parameter.whRatio = attributes.getFloat(R.styleable.CalendarView_calendar_squareWidthHeightRatio, 1.0f);
+            parameter.cellCorner = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_cellCorner, 0);
+            parameter.itemGap = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_cellDividerSize, 0);
 
-            surface.textSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_dayTextSize, dip2px(context, 14));
-            surface.textColorOtherMonth = attributes.getColor(R.styleable.CalendarView_calendar_textColor_otherMonth, Color.BLACK);
-            surface.textColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_textColor_currentMonth, Color.BLACK);
-            surface.textColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_textColor_currentDay, Color.BLACK);
+            parameter.weekTextSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_weekTextSize, dip2px(context, 14));
+            parameter.dayTextSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_dayTextSize, dip2px(context, 24));
+            parameter.monthTextSize = attributes.getDimensionPixelSize(R.styleable.CalendarView_calendar_monthTextSize, dip2px(context, 12));
 
-            surface.textColorTabWeekend = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_weekend, Color.BLACK);
-            surface.textColorTabWorkday = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_workday, Color.BLACK);
+            parameter.textColorOtherMonth = attributes.getColor(R.styleable.CalendarView_calendar_textColor_otherMonth, Color.BLACK);
+            parameter.textColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_textColor_currentMonth, Color.BLACK);
+            parameter.textColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_textColor_currentDay, Color.BLACK);
 
-            surface.bgColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentMonthCell, 0x00ffffff);
-            surface.bgColorLastMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_lastMonthCell, 0x00ffffff);
-            surface.bgColorNextMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_nextMonthCell, 0x00ffffff);
-            surface.bgColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentDayCell, 0x00ffffff);
-            surface.bgColorTab = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab, Color.WHITE);
-            surface.bgColorTabIcon = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab_icon, Color.WHITE);
+            parameter.textColorTabWeekend = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_weekend, Color.BLACK);
+            parameter.textColorTabWorkday = attributes.getColor(R.styleable.CalendarView_calendar_textColor_tab_workday, Color.BLACK);
+
+            parameter.bgColorCurrentMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentMonthCell, 0x00ffffff);
+            parameter.bgColorLastMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_lastMonthCell, 0x00ffffff);
+            parameter.bgColorNextMonth = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_nextMonthCell, 0x00ffffff);
+            parameter.bgColorCurrentDay = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_currentDayCell, 0x00ffffff);
+            parameter.bgColorTab = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab, Color.WHITE);
+            parameter.bgColorTabIcon = attributes.getColor(R.styleable.CalendarView_calendar_bgColor_tab_icon, Color.WHITE);
 
             attributes.recycle();
         }
-        surface.initPaint();
+        parameter.initPaint();
 
         /*初始化当前日期*/
         time = today = new Date();
@@ -126,8 +129,8 @@ public class CalendarView extends View implements View.OnTouchListener {
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (changed && null != surface && surface.isWithLine) {
-            surface.initBoxPath();
+        if (changed && null != parameter && parameter.isWithLine) {
+            parameter.initBoxPath();
         }
         super.onLayout(changed, left, top, right, bottom);
     }
@@ -135,12 +138,11 @@ public class CalendarView extends View implements View.OnTouchListener {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         // 画框
-        if (surface.isWithLine) {
-            canvas.drawPath(surface.boxPath, surface.borderPaint);
+        if (parameter.isWithLine) {
+            canvas.drawPath(parameter.boxPath, parameter.borderPaint);
         }
         // 星期
-        int halfItemSpace = surface.itemSpace / 2;
-        // 绘制tab
+        int halfItemSpace = parameter.itemGap / 2;
         drawTab(canvas, halfItemSpace);
 
         // 计算日期
@@ -162,7 +164,7 @@ public class CalendarView extends View implements View.OnTouchListener {
         }
 
         for (int i = 0; i < 42; i++) {
-            drawCell(canvas, surface.rect, i, date[i] + "", i == todayIndex,
+            drawCell(canvas, parameter.rect, i, date[i] + "", i == todayIndex,
                     currentYear, currentMonth);
         }
         super.onDraw(canvas);
@@ -199,33 +201,33 @@ public class CalendarView extends View implements View.OnTouchListener {
     }
 
     private void drawTab(Canvas canvas, int halfItemSpace) {
-        surface.path.reset();
-        surface.path.moveTo(halfItemSpace, surface.cellHeight - halfItemSpace);
-        surface.path.lineTo(surface.width - halfItemSpace, surface.cellHeight - halfItemSpace);
-        surface.path.lineTo(surface.width - halfItemSpace, 30);
-        surface.rectF.set(surface.width - halfItemSpace - 30 * 2, 0, surface.width - halfItemSpace, 30 * 2);
-        surface.path.arcTo(surface.rectF, 0, -90);
-        surface.path.lineTo(30, 0);
-        surface.rectF.set(halfItemSpace, 0, halfItemSpace + 30 * 2, 30 * 2);
-        surface.path.arcTo(surface.rectF, -90, -90);
-        surface.path.close();
-        surface.datePaint.setColor(surface.bgColorTab);
-        canvas.drawPath(surface.path, surface.datePaint);
+        parameter.path.reset();
+        parameter.path.moveTo(halfItemSpace, parameter.cellHeight - halfItemSpace);
+        parameter.path.lineTo(parameter.width - halfItemSpace, parameter.cellHeight - halfItemSpace);
+        parameter.path.lineTo(parameter.width - halfItemSpace, 30);
+        parameter.rectF.set(parameter.width - halfItemSpace - 30 * 2, 0, parameter.width - halfItemSpace, 30 * 2);
+        parameter.path.arcTo(parameter.rectF, 0, -90);
+        parameter.path.lineTo(30, 0);
+        parameter.rectF.set(halfItemSpace, 0, halfItemSpace + 30 * 2, 30 * 2);
+        parameter.path.arcTo(parameter.rectF, -90, -90);
+        parameter.path.close();
+        parameter.datePaint.setColor(parameter.bgColorTab);
+        canvas.drawPath(parameter.path, parameter.datePaint);
 
-        surface.datePaint.setColor(surface.bgColorTabIcon);
-        int radius = surface.textSize;
-        for (int i = 0; i < surface.weekText.length; i++) {
-            surface.rect.set((int) (i * surface.cellWidth), 0, (int) ((i + 1) * surface.cellWidth), (int) surface.cellHeight);
-            Paint.FontMetricsInt fontMetrics = surface.weekPaint.getFontMetricsInt();
-            int baseline = (surface.rect.bottom + surface.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-            if (i == 0 || i == surface.weekText.length - 1) {
-                surface.weekPaint.setColor(surface.textColorTabWeekend);
+        parameter.datePaint.setColor(parameter.bgColorTabIcon);
+        int radius = parameter.dayTextSize;
+        for (int i = 0; i < parameter.weekText.length; i++) {
+            parameter.rect.set((int) (i * parameter.cellWidth), 0, (int) ((i + 1) * parameter.cellWidth), (int) parameter.cellHeight);
+            Paint.FontMetricsInt fontMetrics = parameter.weekPaint.getFontMetricsInt();
+            int baseline = (parameter.rect.bottom + parameter.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+            if (i == 0 || i == parameter.weekText.length - 1) {
+                parameter.weekPaint.setColor(parameter.textColorTabWeekend);
             } else {
-                surface.weekPaint.setColor(surface.textColorTabWorkday);
+                parameter.weekPaint.setColor(parameter.textColorTabWorkday);
             }
-            surface.rectF.set(surface.rect.centerX() - radius, surface.rect.centerY() - radius, surface.rect.centerX() + radius, surface.rect.centerY() + radius);
-            canvas.drawArc(surface.rectF, 0, 360, true, surface.datePaint);
-            canvas.drawText(surface.weekText[i], surface.rect.centerX(), baseline, surface.weekPaint);
+            parameter.rectF.set(parameter.rect.centerX() - radius, parameter.rect.centerY() - radius, parameter.rect.centerX() + radius, parameter.rect.centerY() + radius);
+            canvas.drawArc(parameter.rectF, 0, 360, true, parameter.datePaint);
+            canvas.drawText(parameter.weekText[i], parameter.rect.centerX(), baseline, parameter.weekPaint);
         }
     }
 
@@ -239,66 +241,66 @@ public class CalendarView extends View implements View.OnTouchListener {
         int x = getXByIndex(index);
         int y = getYByIndex(index);
 
-        targetRect.top = (int) (surface.cellHeight + (y - 1) * surface.cellHeight);
-        targetRect.bottom = (int) (surface.cellHeight + y * surface.cellHeight);
-        targetRect.left = (int) (surface.cellWidth * (x - 1));
-        targetRect.right = (int) (surface.cellWidth * x);
+        targetRect.top = (int) (parameter.cellHeight + (y - 1) * parameter.cellHeight);
+        targetRect.bottom = (int) (parameter.cellHeight + y * parameter.cellHeight);
+        targetRect.left = (int) (parameter.cellWidth * (x - 1));
+        targetRect.right = (int) (parameter.cellWidth * x);
 
-        int halfItemSpace = surface.itemSpace / 2;
-        surface.rectF.set(targetRect.left + halfItemSpace, targetRect.top + halfItemSpace,
+        int halfItemSpace = parameter.itemGap / 2;
+        parameter.rectF.set(targetRect.left + halfItemSpace, targetRect.top + halfItemSpace,
                 targetRect.right - halfItemSpace, targetRect.bottom - halfItemSpace);
 
         if (isLastMonth(index)) {
             // 上个月
-            int color = surface.textColorOtherMonth;
+            int color = parameter.textColorOtherMonth;
             int month;
             if (currentMonth == 1) {
                 month = 12;
             } else {
                 month = currentMonth - 1;
             }
-            surface.datePaint.setColor(surface.bgColorLastMonth);
-            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            parameter.datePaint.setColor(parameter.bgColorLastMonth);
+            canvas.drawRoundRect(parameter.rectF, parameter.cellCorner, parameter.cellCorner, parameter.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
         } else if (isNextMonth(index)) {
             // 下个月
-            int color = surface.textColorOtherMonth;
+            int color = parameter.textColorOtherMonth;
             int month;
             if (currentMonth == 12) {
                 month = 1;
             } else {
                 month = currentMonth + 1;
             }
-            surface.datePaint.setColor(surface.bgColorNextMonth);
-            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            parameter.datePaint.setColor(parameter.bgColorNextMonth);
+            canvas.drawRoundRect(parameter.rectF, parameter.cellCorner, parameter.cellCorner, parameter.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, month, text);
         } else {
             // 本月
-            int color = isCurrentDay ? surface.textColorCurrentDay : surface.textColorCurrentMonth;
-            surface.datePaint.setColor(isCurrentDay ? surface.bgColorCurrentDay : surface.bgColorCurrentMonth);
-            canvas.drawRoundRect(surface.rectF, surface.cellCorner, surface.cellCorner, surface.datePaint);
+            int color = isCurrentDay ? parameter.textColorCurrentDay : parameter.textColorCurrentMonth;
+            parameter.datePaint.setColor(isCurrentDay ? parameter.bgColorCurrentDay : parameter.bgColorCurrentMonth);
+            canvas.drawRoundRect(parameter.rectF, parameter.cellCorner, parameter.cellCorner, parameter.datePaint);
             drawCellText(canvas, targetRect, halfItemSpace, color, currentMonth, text);
         }
     }
 
     private void drawCellText(Canvas canvas, Rect targetRect, int halfItemSpace, int color,
                               int month, String text) {
-        surface.datePaint.setColor(color);
-        surface.datePaint.setTextSize(surface.daySize);
-        surface.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
-        surface.rect.set(targetRect.left + halfItemSpace, targetRect.centerY() - surface.daySize + 15, targetRect.right - halfItemSpace, targetRect.centerY() + 15);
-        Paint.FontMetricsInt fontMetrics = surface.datePaint.getFontMetricsInt();
-        int baseline = (surface.rect.bottom + surface.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-        canvas.drawText(text, surface.rect.centerX(), baseline, surface.datePaint);
+        parameter.datePaint.setColor(color);
+        parameter.datePaint.setTextSize(parameter.dayTextSize);
+        parameter.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+        parameter.rect.set(targetRect.left + halfItemSpace, targetRect.centerY() - parameter.dayTextSize + 15, targetRect.right - halfItemSpace, targetRect.centerY() + 15);
+        Paint.FontMetricsInt fontMetrics = parameter.datePaint.getFontMetricsInt();
+        int baseline = (parameter.rect.bottom + parameter.rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        canvas.drawText(text, parameter.rect.centerX(), baseline, parameter.datePaint);
 
-        int bottom = surface.rect.bottom;
-        surface.datePaint.setTextSize(surface.monthSize);
-        surface.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
-        surface.rect.top = bottom + 5;
-        surface.rect.bottom = surface.rect.top + surface.monthSize;
-        Paint.FontMetricsInt fontMetrics1 = surface.datePaint.getFontMetricsInt();
-        int baseline1 = (surface.rect.bottom + surface.rect.top - fontMetrics1.bottom - fontMetrics1.top) / 2;
-        canvas.drawText(month + "月", surface.rect.centerX(), baseline1, surface.datePaint);
+        int bottom = parameter.rect.bottom;
+        parameter.datePaint.setTextSize(parameter.monthTextSize);
+        parameter.datePaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
+        parameter.rect.top = bottom + 5;
+        parameter.rect.bottom = parameter.rect.top + parameter.monthTextSize;
+        Paint.FontMetricsInt fontMetrics1 = parameter.datePaint.getFontMetricsInt();
+        int baseline1 = (parameter.rect.bottom + parameter.rect.top - fontMetrics1.bottom - fontMetrics1.top) / 2;
+        canvas.drawText(month + "月", parameter.rect.centerX(), baseline1, parameter.datePaint);
     }
 
     private void calculateDate() {
@@ -349,13 +351,13 @@ public class CalendarView extends View implements View.OnTouchListener {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        surface.width = getExpectSize(getScreenWidth(getContext()), widthMeasureSpec);
-        surface.cellWidth = (float) surface.width / 7;
-        float height = surface.cellWidth / surface.whRatio;
-        int i = surface.monthSize + surface.daySize + surface.itemSpace * 7;
-        surface.cellHeight = Math.max(height, i);
-        surface.height = getExpectSize((int) (surface.cellHeight * 7), heightMeasureSpec);
-        setMeasuredDimension(surface.width, surface.height);
+        parameter.width = getExpectSize(getScreenWidth(getContext()), widthMeasureSpec);
+        parameter.cellWidth = (float) parameter.width / 7;
+        float height = parameter.cellWidth / parameter.whRatio;
+        int i = parameter.monthTextSize + parameter.dayTextSize + parameter.itemGap * 7;
+        parameter.cellHeight = Math.max(height, i);
+        parameter.height = getExpectSize((int) (parameter.cellHeight * 7), heightMeasureSpec);
+        setMeasuredDimension(parameter.width, parameter.height);
     }
 
     private int getExpectSize(int size, int measureSpec) {
@@ -381,13 +383,14 @@ public class CalendarView extends View implements View.OnTouchListener {
     /**
      * 属性设置
      */
-    private class Surface {
+    private class Parameter {
         public String[] weekText;
-        public String[] monthText = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
         private int width;
         private int height;
 
         private boolean isWithLine;
+        private int lineSize;
+        private int lineColor;
         private float whRatio;
 
         /**
@@ -436,34 +439,48 @@ public class CalendarView extends View implements View.OnTouchListener {
          */
         private int bgColorTabIcon;
 
-        private int textSize;
-        private int lineSize;
-        private int lineColor;
+        /**
+         * tab栏周几文本字体大小
+         */
+        private int weekTextSize;
+        /**
+         * 日期文本字体大小
+         */
+        private int dayTextSize;
+        /**
+         * 月份文本字体大小
+         */
+        private int monthTextSize;
 
-        private float cellWidth; // 日期方框宽度
-        private float cellHeight; // 日期方框高度
-
-        public Path boxPath; // 边框路径
+        /**
+         * 日期方框宽度
+         */
+        private float cellWidth;
+        /**
+         * 日期方框高度
+         */
+        private float cellHeight;
+        /**
+         * 边框路径
+         */
+        public Path boxPath;
 
         public Rect rect;
         public RectF rectF;
         public Path path;
-        public int itemSpace;
-        public int tipSize;
-        public int monthSize;
-        public int daySize;
+        /**
+         * 间隔
+         */
+        public int itemGap;
 
         public int cellCorner;
 
-        public Surface() {
+        public Parameter() {
             weekText = context.getResources().getStringArray(R.array.calendar_tab_week);
 
             rect = new Rect(0, 0, 0, 0);
             rectF = new RectF(0, 0, 0, 0);
             path = new Path();
-            tipSize = dip2px(getContext(), 8);
-            monthSize = dip2px(getContext(), 12);
-            daySize = dip2px(getContext(), 24);
         }
 
         private Paint borderPaint;
@@ -477,16 +494,17 @@ public class CalendarView extends View implements View.OnTouchListener {
             borderPaint.setStyle(Paint.Style.STROKE);
             lineSize = Math.max(lineSize, 1);
             borderPaint.setStrokeWidth(lineSize);
+
             weekPaint = new Paint();
             weekPaint.setTextAlign(Paint.Align.CENTER);
             weekPaint.setAntiAlias(true);
-            float weekTextSize = textSize;
             weekPaint.setTextSize(weekTextSize);
             weekPaint.setTypeface(Typeface.DEFAULT_BOLD);
+
             datePaint = new Paint();
             datePaint.setTextAlign(Paint.Align.CENTER);
             datePaint.setAntiAlias(true);
-            datePaint.setTextSize(textSize);
+            datePaint.setTextSize(dayTextSize);
             datePaint.setTypeface(Typeface.DEFAULT);
         }
 
@@ -511,9 +529,9 @@ public class CalendarView extends View implements View.OnTouchListener {
     }
 
     private void setSelectedDateByCoor(float x, float y) {
-        if (y > surface.cellHeight) {
-            int m = (int) (Math.floor(x / surface.cellWidth) + 1);
-            int n = (int) (Math.floor((y - (surface.cellHeight)) / surface.cellHeight) + 1);
+        if (y > parameter.cellHeight) {
+            int m = (int) (Math.floor(x / parameter.cellWidth) + 1);
+            int n = (int) (Math.floor((y - (parameter.cellHeight)) / parameter.cellHeight) + 1);
             downIndex = (n - 1) * 7 + m - 1;
 
             mCalendar.setTime(time);

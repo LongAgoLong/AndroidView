@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 public class CstLinearView extends LinearLayout {
     private AdapterDataSetObserver mDataSetObserver;
 
-    private CstBaseAdapter adapter;
+    private CstBaseAdapter<?> adapter;
     private ICstItemClickCallback iCstItemClickCallback;
 
     public CstLinearView(Context context) {
@@ -25,7 +25,7 @@ public class CstLinearView extends LinearLayout {
         super(context, attrs);
     }
 
-    public void setAdapter(CstBaseAdapter adapter) {
+    public void setAdapter(CstBaseAdapter<?> adapter) {
         if (this.adapter != null && mDataSetObserver != null) {
             this.adapter.unregisterDataSetObserver(mDataSetObserver);
             this.adapter.recycle();

@@ -6,7 +6,7 @@
         <attr name="calendar_lineSize" format="dimension" />
         <attr name="calendar_lineColor" format="color|reference" />
         <!--宽高比例-->
-        <attr name="calendar_squareWidhtHeightRatio" format="float" />
+        <attr name="calendar_squareWidthHeightRatio" format="float" />
         <!--月份文字颜色-->
         <attr name="calendar_textColor_otherMonth" format="color|reference" />
         <attr name="calendar_textColor_currentMonth" format="color|reference" />
@@ -14,8 +14,12 @@
 
         <attr name="calendar_textColor_tab_weekend" format="color|reference" />
         <attr name="calendar_textColor_tab_workday" format="color|reference" />
-        <!--文本大小-->
+        <!--tab栏周几文本大小-->
+        <attr name="calendar_weekTextSize" format="dimension" />
+        <!--日期文本大小-->
         <attr name="calendar_dayTextSize" format="dimension" />
+        <!--月份文本大小-->
+        <attr name="calendar_monthTextSize" format="dimension" />
 
         <attr name="calendar_cellCorner" format="dimension" />
         <attr name="calendar_cellDividerSize" format="dimension" />
