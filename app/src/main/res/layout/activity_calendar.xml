@@ -28,7 +28,7 @@
             app:calendar_isWithLine="false"
             app:calendar_dayTextSize="24sp"
             app:calendar_monthTextSize="14sp"
-            app:calendar_weekTextSize="14sp"
+            app:calendar_weekTextSize="16sp"
             app:calendar_squareWidthHeightRatio="0.8"
             app:calendar_textColor_currentDay="@color/calendar_current_day_text"
             app:calendar_textColor_currentMonth="@color/calendar_default_text"

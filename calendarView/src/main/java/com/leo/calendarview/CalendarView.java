@@ -215,7 +215,7 @@ public class CalendarView extends View implements View.OnTouchListener {
         canvas.drawPath(parameter.path, parameter.datePaint);
 
         parameter.datePaint.setColor(parameter.bgColorTabIcon);
-        int radius = parameter.dayTextSize;
+        int radius = parameter.weekTextSize;
         for (int i = 0; i < parameter.weekText.length; i++) {
             parameter.rect.set((int) (i * parameter.cellWidth), 0, (int) ((i + 1) * parameter.cellWidth), (int) parameter.cellHeight);
             Paint.FontMetricsInt fontMetrics = parameter.weekPaint.getFontMetricsInt();
@@ -225,8 +225,7 @@ public class CalendarView extends View implements View.OnTouchListener {
             } else {
                 parameter.weekPaint.setColor(parameter.textColorTabWorkday);
             }
-            parameter.rectF.set(parameter.rect.centerX() - radius, parameter.rect.centerY() - radius, parameter.rect.centerX() + radius, parameter.rect.centerY() + radius);
-            canvas.drawArc(parameter.rectF, 0, 360, true, parameter.datePaint);
+            canvas.drawCircle(parameter.rect.centerX(), parameter.rect.centerY(), radius, parameter.datePaint);
             canvas.drawText(parameter.weekText[i], parameter.rect.centerX(), baseline, parameter.weekPaint);
         }
     }
