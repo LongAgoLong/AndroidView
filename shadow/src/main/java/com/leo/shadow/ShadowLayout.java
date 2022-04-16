@@ -3,9 +3,12 @@ package com.leo.shadow;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+
+import androidx.annotation.Nullable;
 
 public class ShadowLayout extends FrameLayout {
 
@@ -17,6 +20,7 @@ public class ShadowLayout extends FrameLayout {
 
     private boolean mInvalidateShadowOnSizeChanged = true;
     private boolean mForceInvalidateShadow = false;
+    private BitmapDrawable bitmapDrawable;
 
     public ShadowLayout(Context context) {
         super(context);
@@ -85,24 +89,26 @@ public class ShadowLayout extends FrameLayout {
     @SuppressWarnings("deprecation")
     private void setBackgroundCompat(int w, int h) {
         if (!isInEditMode()) {
-            BitmapDrawable drawable = ShadowHelper.createShadow(getContext(),
+            bitmapDrawable = ShadowHelper.createShadow(getContext(),
                     w, h, mCornerRadius, mShadowRadius,
                     mDx, mDy, mShadowColor);
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
-                setBackgroundDrawable(drawable);
-            } else {
-                setBackground(drawable);
-            }
+            setBackgroundCompat(bitmapDrawable);
         }
     }
 
+    private void setBackgroundCompat(@Nullable Drawable drawable) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
+            setBackgroundDrawable(drawable);
+        } else {
+            setBackground(drawable);
+        }
+    }
 
     private void initAttributes(Context context, AttributeSet attrs) {
         TypedArray attr = getTypedArray(context, attrs, R.styleable.ShadowLayout);
         if (attr == null) {
             return;
         }
-
         try {
             mCornerRadius = attr.getDimensionPixelSize(R.styleable.ShadowLayout_sl_cornerRadius, getResources().getDimensionPixelSize(R.dimen.default_corner_radius));
             mShadowRadius = attr.getDimensionPixelSize(R.styleable.ShadowLayout_sl_shadowRadius, getResources().getDimensionPixelSize(R.dimen.default_shadow_radius));
@@ -118,4 +124,16 @@ public class ShadowLayout extends FrameLayout {
         return context.obtainStyledAttributes(attributeSet, attr, 0, 0);
     }
 
+    /**
+     * 设置阴影显示与否
+     *
+     * @param isVisibility
+     */
+    public void setShadowVisibility(boolean isVisibility) {
+        if (isVisibility) {
+            setBackgroundCompat(bitmapDrawable);
+        } else {
+            setBackgroundCompat(null);
+        }
+    }
 }
